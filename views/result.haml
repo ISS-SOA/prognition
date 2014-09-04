@@ -1,0 +1,9 @@
+!!!
+%html
+  %head
+    %title Codecadet badges information
+  %body
+    %h1 Badges
+    %p #{@username} has collected  #{@badges_found.size} badges.
+    - @badges_found.each do |title, date|
+      Earned #{title} on #{date}.</br>
