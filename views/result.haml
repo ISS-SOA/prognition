@@ -3,7 +3,16 @@
   %head
     %title Codecadet badges information
   %body
-    %h1 Badges
-    %p #{@username} has collected  #{@badges_found.size} badges.
-    - @badges_found.each do |title, date|
-      Earned #{title} on #{date}.</br>
+    %h1 Badges List
+    %table
+      %tbody
+        %tr
+          %th Title
+          %th Date
+        - @badges_found.each do |title, date|
+          %tr
+            %td #{title}
+            %td #{date}
+    -#%p #{@username} has collected  #{@badges_found.size} badges.
+    -#- @badges_found.each do |title, date|
+    -#  Earned #{title} on #{date}.</br>
