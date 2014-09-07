@@ -2,7 +2,6 @@ require 'sinatra/base'
 require 'codebadges'
 require 'haml'
 require 'json'
-require 'active_support/all'
 
 class CodecadetApp < Sinatra::Base
   get '/' do
@@ -24,7 +23,13 @@ class CodecadetApp < Sinatra::Base
 
   get '/api/v1/cadet/:username.json' do
     content_type :json
-    CodeBadges::CodecademyBadges.get_badges(params[:username]).to_json
+    # CodeBadges::CodecademyBadges.get_badges(params[:username]).to_json
+    badges_array = []
+    badges_hash = CodeBadges::CodecademyBadges.get_badges(params[:username])
+    badges_hash.each_with_index do |(k, v), _|
+      badges_array << { k => v }
+    end
+    badges_array.to_json
   end
 
 end
