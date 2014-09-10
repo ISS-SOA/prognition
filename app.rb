@@ -6,15 +6,14 @@ require 'json'
 class CodecadetApp < Sinatra::Base
   helpers do
     def refactor
-      badges_before = CodeBadges::CodecademyBadges.get_badges(params[:username])
       badges_after = {
         'id'      => params[:username],
         'type'    => 'cadet',
         'badges'  => []
       }
 
-      badges_before.map do |title, date|
-        badges_after['badges'].push( 'id' => title, 'date' => date )
+      CodeBadges::CodecademyBadges.get_badges(params[:username]).each do |title, date|
+        badges_after['badges'].push('id' => title, 'date' => date)
       end
       badges_after
     end
