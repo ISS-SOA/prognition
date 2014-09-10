@@ -4,6 +4,22 @@ require 'haml'
 require 'json'
 
 class CodecadetApp < Sinatra::Base
+  helpers do
+    def refactor
+      badges_before = CodeBadges::CodecademyBadges.get_badges(params[:username])
+      badges_after = {
+        'id'      => params[:username],
+        'type'    => 'cadet',
+        'badges'  => []
+      }
+
+      badges_before.map do |title, date|
+        badges_after['badges'].push( 'id' => title, 'date' => date )
+      end
+      badges_after
+    end
+  end
+
   get '/' do
     redirect to('/cadet')
   end
@@ -23,7 +39,7 @@ class CodecadetApp < Sinatra::Base
 
   get '/api/v1/cadet/:username.json' do
     content_type :json
-    CodeBadges::CodecademyBadges.get_badges(params[:username]).to_json
+    refactor.to_json
   end
 
 end
