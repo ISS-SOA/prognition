@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'sinatra'
+gem 'sinatra', :require => 'sinatra/base'
 gem 'codebadges'
 gem 'haml'
 gem 'json'
