@@ -1,0 +1,10 @@
+%h1 Badges List
+%table
+  %tbody
+    %tr
+      %th Title
+      %th Date
+    - @badges_found.each do |title, date|
+      %tr
+        %td #{title}
+        %td #{date}
