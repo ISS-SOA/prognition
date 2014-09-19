@@ -18,8 +18,13 @@ class CodecadetApp < Sinatra::Base
       badges_after
     end
 
-    def check_badges(username, badges)
-      badges_found = CodeBadges::CodecademyBadges.get_badges(username).keys
+    def check_badges(usernames, badges)
+      @check_info = {}
+      usernames.each do |username|
+        badges_found = CodeBadges::CodecademyBadges.get_badges(username).keys
+        @check_info[username] = \
+          badges.select { |badge| !badges_found.include? badge }
+      end
     end
   end
 
@@ -45,15 +50,9 @@ class CodecadetApp < Sinatra::Base
   end
 
   post '/checkbadges' do
-    @check_info = {}
     usernames = params[:usernames].split("\r\n")
     badges = params[:badges].split("\r\n")
-
-    usernames.each do |username|
-      badges_found = CodeBadges::CodecademyBadges.get_badges(username).keys
-      @check_info[username] = \
-        badges.select { |badge| !badges_found.include? badge }
-    end
+    check_badges(usernames, badges)
 
     haml :check_result
   end
