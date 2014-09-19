@@ -1,0 +1,12 @@
+%form{:action => '/checkbadges', :method => 'post'}
+  %dl
+    %dt
+      %label{:for => 'check-form-usernames'} Usernames
+    %dd
+      %textarea{:id => 'check-form-usernames', :name => 'usernames'}
+  %dl
+    %dt
+      %label{:for => 'check-form-badges'} Badges names
+    %dd
+      %textarea{:id => 'check-form-badges', :name => 'badges'}
+  %input{:type => 'submit', :value => 'submit'}

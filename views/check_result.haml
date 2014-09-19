@@ -1,0 +1,12 @@
+- @check_info.each do |username, badges|
+  %h2
+    = username
+  - if badges.size != 0
+    %p
+      = "Missing Badges:"
+    %p
+      - badges.each do |badge|
+        = "#{badge}" + "</br>"
+  - else
+    %p
+      = "No Missing Badges."

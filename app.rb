@@ -17,6 +17,10 @@ class CodecadetApp < Sinatra::Base
       end
       badges_after
     end
+
+    def check_badges(username, badges)
+      badges_found = CodeBadges::CodecademyBadges.get_badges(username).keys
+    end
   end
 
   get '/' do
@@ -34,6 +38,24 @@ class CodecadetApp < Sinatra::Base
 
   post '/result' do
     redirect to("/cadet/#{params[:username]}")
+  end
+
+  get '/checkbadges' do
+    haml :check
+  end
+
+  post '/checkbadges' do
+    @check_info = {}
+    usernames = params[:usernames].split("\r\n")
+    badges = params[:badges].split("\r\n")
+
+    usernames.each do |username|
+      badges_found = CodeBadges::CodecademyBadges.get_badges(username).keys
+      @check_info[username] = \
+        badges.select { |badge| !badges_found.include? badge }
+    end
+
+    haml :check_result
   end
 
   get '/api/v1/cadet/:username.json' do
