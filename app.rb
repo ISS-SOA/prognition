@@ -45,11 +45,12 @@ class CodecadetApp < Sinatra::Base
     redirect to("/cadet/#{params[:username]}")
   end
 
-  get '/checkbadges' do
+  get '/check' do
+
     haml :check
   end
 
-  post '/checkbadges' do
+  post '/check' do
     usernames = params[:usernames].split("\r\n")
     badges = params[:badges].split("\r\n")
     check_badges(usernames, badges)
@@ -61,5 +62,4 @@ class CodecadetApp < Sinatra::Base
     content_type :json
     refactor.to_json
   end
-
 end
