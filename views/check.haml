@@ -1,12 +1,15 @@
-%form{:action => '/checkbadges', :method => 'post'}
-  %dl
-    %dt
-      %label{:for => 'check-form-usernames'} Usernames
-    %dd
-      %textarea{:id => 'check-form-usernames', :name => 'usernames'}
-  %dl
-    %dt
-      %label{:for => 'check-form-badges'} Badges names
-    %dd
-      %textarea{:id => 'check-form-badges', :name => 'badges'}
-  %input{:type => 'submit', :value => 'submit'}
+%form{:action => '/check', :method => 'post'}
+  #check-usernames-list.check-list
+    %dl
+      %dt
+        %label{:for => 'check-form-usernames'} Usernames
+      %dd
+        %textarea{:id => 'check-form-usernames', :name => 'usernames', :rows => '10', :cols => '50'}
+  #check-badges-list.check-list
+    %dl
+      %dt
+        %label{:for => 'check-form-badges'} Badges names
+      %dd
+        %textarea{:id => 'check-form-badges', :name => 'badges', :rows => '10', :cols => '50'}
+  .float-clear
+  %input{:type => 'submit', :value => 'submit', :id => 'check-form-submit'}

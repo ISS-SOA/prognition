@@ -2,8 +2,12 @@ require 'sinatra/base'
 require 'codebadges'
 require 'haml'
 require 'json'
+require 'sinatra/flash'
 
 class CodecadetApp < Sinatra::Base
+  enable :sessions
+  register Sinatra::Flash
+
   helpers do
     def refactor
       badges_after = {
@@ -37,8 +41,13 @@ class CodecadetApp < Sinatra::Base
   end
 
   get '/cadet/:username' do
-    @badges_found = CodeBadges::CodecademyBadges.get_badges(params[:username])
-    haml :result
+    begin
+      @badges_found = CodeBadges::CodecademyBadges.get_badges(params[:username])
+      haml :result
+    rescue OpenURI::HTTPError => _
+      flash[:notice] = 'There is Missing Username.'
+      redirect to('/cadet')
+    end
   end
 
   post '/result' do
@@ -46,15 +55,18 @@ class CodecadetApp < Sinatra::Base
   end
 
   get '/check' do
-
     haml :check
   end
 
   post '/check' do
     usernames = params[:usernames].split("\r\n")
     badges = params[:badges].split("\r\n")
-    check_badges(usernames, badges)
-
+    begin
+      check_badges(usernames, badges)
+    rescue OpenURI::HTTPError => _
+      flash[:error] = 'There is/are Missing Username(s).'
+      redirect to('/check')
+    end
     haml :check_result
   end
 

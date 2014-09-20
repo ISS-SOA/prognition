@@ -1,6 +1,7 @@
 source 'http://rubygems.org'
 
 gem 'sinatra', :require => 'sinatra/base'
+gem 'sinatra-flash'
 gem 'codebadges'
 gem 'haml'
 gem 'json'

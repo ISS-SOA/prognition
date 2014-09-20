@@ -16,6 +16,8 @@ GEM
       rack (~> 1.4)
       rack-protection (~> 1.4)
       tilt (~> 1.3, >= 1.3.4)
+    sinatra-flash (0.3.0)
+      sinatra (>= 1.0.0)
     tilt (1.4.1)
 
 PLATFORMS
@@ -26,4 +28,5 @@ DEPENDENCIES
   haml
   json
   sinatra
+  sinatra-flash
   tilt (~> 1.4.1)
