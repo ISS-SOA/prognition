@@ -46,7 +46,7 @@ class CodecadetApp < Sinatra::Base
       @badges_found = CodeBadges::CodecademyBadges.get_badges(params[:username])
       haml :result
     rescue OpenURI::HTTPError => _
-      flash[:notice] = 'There is Missing Username.'
+      flash[:notice] = 'There is a Missing Username.'
       redirect to('/cadet')
     end
   end
