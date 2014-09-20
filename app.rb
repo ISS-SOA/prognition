@@ -59,18 +59,6 @@ class CodecadetApp < Sinatra::Base
     haml :check
   end
 
-  post '/check' do
-    usernames = params[:usernames].split("\r\n")
-    badges = params[:badges].split("\r\n")
-    begin
-      check_badges(usernames, badges)
-    rescue OpenURI::HTTPError => _
-      flash[:error] = 'There is/are Missing Username(s).'
-      redirect to('/check')
-    end
-    haml :check_result
-  end
-
   get '/api/v1/cadet/:username.json' do
     content_type :json
     refactor.to_json
