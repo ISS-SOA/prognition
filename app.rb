@@ -29,6 +29,7 @@ class CodecadetApp < Sinatra::Base
         @check_info[username] = \
           badges.select { |badge| !badges_found.include? badge }
       end
+      @check_info
     end
   end
 
@@ -45,7 +46,7 @@ class CodecadetApp < Sinatra::Base
       @badges_found = CodeBadges::CodecademyBadges.get_badges(params[:username])
       haml :result
     rescue OpenURI::HTTPError => _
-      flash[:notice] = 'There is Missing Username.'
+      flash[:notice] = 'There is a Missing Username.'
       redirect to('/cadet')
     end
   end
@@ -58,20 +59,15 @@ class CodecadetApp < Sinatra::Base
     haml :check
   end
 
-  post '/check' do
-    usernames = params[:usernames].split("\r\n")
-    badges = params[:badges].split("\r\n")
-    begin
-      check_badges(usernames, badges)
-    rescue OpenURI::HTTPError => _
-      flash[:error] = 'There is/are Missing Username(s).'
-      redirect to('/check')
-    end
-    haml :check_result
-  end
-
   get '/api/v1/cadet/:username.json' do
     content_type :json
     refactor.to_json
+  end
+
+  post '/api/v1/check' do
+    content_type :json
+    usernames = params[:usernames].split("\r\n")
+    badges = params[:badges].split("\r\n")
+    check_badges(usernames, badges).to_json
   end
 end
