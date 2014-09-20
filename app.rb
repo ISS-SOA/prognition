@@ -29,6 +29,7 @@ class CodecadetApp < Sinatra::Base
         @check_info[username] = \
           badges.select { |badge| !badges_found.include? badge }
       end
+      @check_info
     end
   end
 
@@ -73,5 +74,12 @@ class CodecadetApp < Sinatra::Base
   get '/api/v1/cadet/:username.json' do
     content_type :json
     refactor.to_json
+  end
+
+  post '/api/v1/check' do
+    content_type :json
+    usernames = params[:usernames].split("\r\n")
+    badges = params[:badges].split("\r\n")
+    check_badges(usernames, badges).to_json
   end
 end
