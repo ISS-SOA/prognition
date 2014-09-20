@@ -32,3 +32,13 @@ nav a:hover {
 .float-clear {
   clear: both;
 }
+
+.flash {
+  width: 600px;
+  padding: 5px;
+  font-weight: bold;
+  margin: 20px;
+  background: #FF99FF;
+  color: red;
+  border: 1px solid red;
+}
