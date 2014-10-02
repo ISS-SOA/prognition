@@ -3,6 +3,7 @@ require 'codebadges'
 require 'haml'
 require 'json'
 require 'sinatra/flash'
+require 'chartkick'
 
 class CodecadetApp < Sinatra::Base
   enable :sessions
@@ -31,6 +32,18 @@ class CodecadetApp < Sinatra::Base
       end
       @check_info
     end
+
+    def count_per_day(badges_info)
+      dates = Hash.new(0)
+      badges_info.values.each do |date|
+        if dates.keys.include? date
+          dates[date] += 1
+        else
+          dates[date] = 1
+        end
+      end
+      dates
+    end
   end
 
   get '/' do
@@ -44,6 +57,7 @@ class CodecadetApp < Sinatra::Base
   get '/cadet/:username' do
     begin
       @badges_found = CodeBadges::CodecademyBadges.get_badges(params[:username])
+      @dates = count_per_day(@badges_found)
       haml :result
     rescue OpenURI::HTTPError => _
       flash[:notice] = 'There is a Missing Username.'
