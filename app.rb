@@ -47,11 +47,11 @@ class CodecadetApp < Sinatra::Base
   end
 
   get '/' do
-    redirect to('/cadet')
+    haml :home
   end
 
   get '/cadet' do
-    haml :home
+    haml :user
   end
 
   get '/cadet/:username' do
@@ -69,8 +69,8 @@ class CodecadetApp < Sinatra::Base
     redirect to("/cadet/#{params[:username]}")
   end
 
-  get '/check' do
-    haml :check
+  get '/group' do
+    haml :group
   end
 
   get '/api/v1/cadet/:username.json' do
