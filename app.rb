@@ -44,29 +44,36 @@ class CodecadetApp < Sinatra::Base
       end
       dates
     end
+
+    def current_page?(path = ' ')
+      path_info = request.path_info
+      path_info += ' ' if path_info == '/'
+      request_path = path_info.split '/'
+      request_path[1] == path
+    end
   end
 
   get '/' do
     haml :home
   end
 
-  get '/cadet' do
+  get '/user' do
     haml :user
   end
 
-  get '/cadet/:username' do
+  get '/user/:username' do
     begin
       @badges_found = CodeBadges::CodecademyBadges.get_badges(params[:username])
       @dates = count_per_day(@badges_found)
       haml :result
     rescue OpenURI::HTTPError => _
       flash[:notice] = 'There is a Missing Username.'
-      redirect to('/cadet')
+      redirect to('/user')
     end
   end
 
   post '/result' do
-    redirect to("/cadet/#{params[:username]}")
+    redirect to("/user/#{params[:username]}")
   end
 
   get '/group' do

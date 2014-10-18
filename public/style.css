@@ -1,44 +1,99 @@
-header h1 {
-  text-align: center;
+/*HTML tag*/
+
+html, body
+{
+	height: 100%;
 }
 
-nav ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  background-color: black;
-  overflow: hidden;
+body {
+	margin: 0px;
+	padding: 0px;
+	font-family: 'Source Sans Pro', sans-serif;
+	font-size: 12pt;
+	font-weight: 400;
+	color: #000000;
 }
 
-nav li {
-  float: left;
+h1, h2, h3 {
+	margin: 0;
+	padding: 0;
 }
 
-nav a {
-  text-decoration: none;
-  display: block;
-  padding: 8px;
-  color: white;
+p, ol, ul {
+	margin-top: 0;
 }
 
-nav a:hover {
-  background-color: gray;
+ol, ul {
+	padding: 0;
+	list-style: none;
 }
 
-.check-list {
-  float: left;
+p {
+	line-height: 180%;
 }
 
-.float-clear {
-  clear: both;
+a
+{
+	color: #0000FF;
 }
 
-.flash {
-  width: 600px;
-  padding: 5px;
-  font-weight: bold;
-  margin: 20px;
-  background: #FF99FF;
-  color: red;
-  border: 1px solid red;
+a:hover
+{
+	text-decoration: none;
+}
+
+
+.container
+{
+	margin: 0px auto;
+	width: 1200px;
+}
+
+/*Header*/
+
+#header_wrapper {
+	overflow: hidden;
+	padding: 5em 0em;
+	background: #8DCB89 url(header.jpg) no-repeat center;
+	background-size: cover;
+}
+
+/*Menu*/
+#menu
+{
+}
+
+#menu ul
+{
+	text-align: center;
+}
+
+#menu li
+{
+	display: inline-block;
+}
+
+#menu li a, #menu li span
+{
+	display: inline-block;
+	margin-left: 0.50em;
+	padding: 1em 1.5em;
+	letter-spacing: 0.20em;
+	text-decoration: none;
+	font-size: 0.90em;
+	font-weight: 600;
+	text-transform: uppercase;
+	outline: 0;
+	color: #FFF;
+}
+
+#menu li:hover a, #menu li.active a, #menu li.active span
+{
+}
+
+#menu .current_page_item a
+{
+	background: #ff6816;
+	border-radius: 8px;
+	color: #FFF;
 }
