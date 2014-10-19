@@ -65,7 +65,7 @@ class CodecadetApp < Sinatra::Base
     begin
       @badges_found = CodeBadges::CodecademyBadges.get_badges(params[:username])
       @dates = count_per_day(@badges_found)
-      haml :result
+      haml :chart, :layout => false
     rescue OpenURI::HTTPError => _
       flash[:notice] = 'There is a Missing Username.'
       redirect to('/user')
@@ -85,10 +85,16 @@ class CodecadetApp < Sinatra::Base
     refactor.to_json
   end
 
-  post '/api/v1/check' do
+  post '/api/v1/group' do
     content_type :json
     usernames = params[:usernames].split("\r\n")
     badges = params[:badges].split("\r\n")
     check_badges(usernames, badges).to_json
+  end
+
+  post '/api/v1/user' do
+    content_type :json
+    badges_found = CodeBadges::CodecademyBadges.get_badges(params[:username])
+    badges_found.to_json
   end
 end

@@ -1,8 +1,10 @@
 .container
-  %form{:action => '/result', :method => 'post'}
-    %dl
-      %dt
-        %label{:for => 'home-form-username'} Username
-      %dd
-        %input{:type => 'text', :name => 'username', :id => 'home-form-username', :placeholder => 'username here...'}
-        %input{:type => 'submit', :name => 'submit', :id => 'home-form-submit', :class => 'submit', :value => 'submit'}
+  .user-input
+    %form{:action => '/api/v1/user', :method => 'post', :id => 'user-form'}
+      %dl
+        %dt
+          %label{:for => 'home-form-username'} Username
+        %dd
+          %input{:type => 'text', :name => 'username', :id => 'home-form-username', :placeholder => 'username here...'}
+      %input{:type => 'submit', :id => 'home-form-submit', :class => 'submit', :value => 'submit'}
+  .user-output

@@ -43,8 +43,7 @@ a:hover
 }
 
 
-.content {
-	text-align: center;
+section {
 	background: #EDEDED;
 }
 /*Header*/
@@ -115,6 +114,7 @@ a:hover
 
 	.container
 	{
+		text-align: center;
 		margin: 0px auto;
 		width: 1200px;
 		overflow: hidden;
@@ -126,97 +126,95 @@ a:hover
 /*********************************************************************************/
 /* Form Style                                                                    */
 /*********************************************************************************/
+form label
+{
+	display: block;
+	margin-bottom: 0.5em;
+}
 
-			form label
-			{
-				display: block;
-				text-align: center;
-				margin-bottom: 0.5em;
-			}
+form .submit
+{
+	margin-top: 2em;
+	background: #8DCB89;
+	border-radius: 8px;
+	line-height: 1.5em;
+	font-size: 1.3em;
+}
 
-			form .submit
-			{
-				margin-top: 2em;
-				background: #8DCB89;
-				border-radius: 8px;
-				line-height: 1.5em;
-				font-size: 1.3em;
-			}
+form input.text,
+form select,
+form textarea
+{
+	position: relative;
+	-webkit-appearance: none;
+	display: block;
+	border: 0;
+	background: #fff;
+	background: rgba(255,255,255,0.75);
+	width: 90%;
+	border-radius: 0.50em;
+	margin: 1em 0em;
+	padding: 1em 1em;
+	box-shadow: inset 0 0.1em 0.1em 0 rgba(0,0,0,0.05);
+	border: solid 1px rgba(0,0,0,0.15);
+	-moz-transition: all 0.35s ease-in-out;
+	-webkit-transition: all 0.35s ease-in-out;
+	-o-transition: all 0.35s ease-in-out;
+	-ms-transition: all 0.35s ease-in-out;
+	transition: all 0.35s ease-in-out;
+	font-family: 'Source Sans Pro', sans-serif;
+	font-size: 1em;
+	outline: none;
+}
 
-			form input.text,
-			form select,
-			form textarea
-			{
-				position: relative;
-				-webkit-appearance: none;
-				display: block;
-				border: 0;
-				background: #fff;
-				background: rgba(255,255,255,0.75);
-				width: 90%;
-				border-radius: 0.50em;
-				margin: 1em 0em;
-				padding: 1em 1em;
-				box-shadow: inset 0 0.1em 0.1em 0 rgba(0,0,0,0.05);
-				border: solid 1px rgba(0,0,0,0.15);
-				-moz-transition: all 0.35s ease-in-out;
-				-webkit-transition: all 0.35s ease-in-out;
-				-o-transition: all 0.35s ease-in-out;
-				-ms-transition: all 0.35s ease-in-out;
-				transition: all 0.35s ease-in-out;
-				font-family: 'Source Sans Pro', sans-serif;
-				font-size: 1em;
-				outline: none;
-			}
+	form input.text:hover,
+	form select:hover,
+	form textarea:hover
+	{
+	}
 
-				form input.text:hover,
-				form select:hover,
-				form textarea:hover
-				{
-				}
+	form input.text:focus,
+	form select:focus,
+	form textarea:focus
+	{
+		box-shadow: 0 0 2px 1px #E0E0E0;
+		background: #fff;
+	}
 
-				form input.text:focus,
-				form select:focus,
-				form textarea:focus
-				{
-					box-shadow: 0 0 2px 1px #E0E0E0;
-					background: #fff;
-				}
+	form textarea
+	{
+		min-height: 10em;
+	}
 
-				form textarea
-				{
-					min-height: 10em;
-				}
+	form .formerize-placeholder
+	{
+		color: #555 !important;
+	}
 
-				form .formerize-placeholder
-				{
-					color: #555 !important;
-				}
+	form ::-webkit-input-placeholder
+	{
+		color: #555 !important;
+	}
 
-				form ::-webkit-input-placeholder
-				{
-					color: #555 !important;
-				}
+	form :-moz-placeholder
+	{
+		color: #555 !important;
+	}
 
-				form :-moz-placeholder
-				{
-					color: #555 !important;
-				}
+	form ::-moz-placeholder
+	{
+		color: #555 !important;
+	}
 
-				form ::-moz-placeholder
-				{
-					color: #555 !important;
-				}
+	form :-ms-input-placeholder
+	{
+		color: #555 !important;
+	}
 
-				form :-ms-input-placeholder
-				{
-					color: #555 !important;
-				}
-
-				form ::-moz-focus-inner
-				{
-					border: 0;
-				}
+	form ::-moz-focus-inner
+	{
+		border: 0;
+	}
 
 .footer {
 	overflow: hidden;
@@ -224,4 +222,14 @@ a:hover
 	background: url(header.jpg) center;
 	border-top: 1px solid rgba(255,255,255,0.08);
 	text-align: center;
+	color: white;
+}
+
+.user-input {
+	float: left;
+	width: 50%;
+}
+
+.user-output {
+	float: left;
 }

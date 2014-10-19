@@ -33,4 +33,26 @@ $(document).ready(function() {
       }
     });
   });
-})
+
+  $('#user-form').submit(function(e) {
+    e.preventDefault();
+    $.ajax({
+      url: $('#user-form').attr('action'),
+      type: 'POST',
+      data: $('#user-form').serialize(),
+      error: function() {
+        alert('ajax error');
+      },
+      success: function(data) {
+        $('.user-output').empty();
+        trend_link = $('<a>See the chart</a>').attr('href', '/user/' + $('#home-form-username').val());
+        $('.user-output').append(trend_link);
+        $('.user-output').append($('<table id="user-output-table"></table>'))
+        for ( var ary in data ) {
+          $('#user-output-table').append($('<tr><td>' + ary + '</td><td>' + data[ary] + '</td></tr>'));
+        }
+      }
+    });
+  });
+
+});
