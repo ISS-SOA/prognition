@@ -11,7 +11,8 @@
   %body
     %header
       = haml :nav
-    %section
+    .content
       = styled_flash
       = yield
-    %footer
+    .footer
+      = haml :footer
