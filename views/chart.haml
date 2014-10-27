@@ -8,10 +8,5 @@
     %script{:src => '//www.google.com/jsapi', :type => 'text/javascript'}
     %script{:src => '/chartkick.js', :type => 'text/javascript'}
   %body
-    %header
-      = haml :nav
-    %section
-      = styled_flash
-      = yield
-    .footer
-      = haml :footer
+    %p
+      = line_chart @dates
