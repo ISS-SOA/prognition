@@ -1,0 +1,1 @@
+[ ![Codeship Status for ISS-SOA/codecadet](https://www.codeship.io/projects/b0a69d80-4644-0132-25b4-2602dd94dcef/status)](https://www.codeship.io/projects/45237)
