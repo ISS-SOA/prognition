@@ -11,26 +11,36 @@ class CodecadetApp < Sinatra::Base
 
   helpers do
     def refactor
-      badges_after = {
-        'id'      => params[:username],
-        'type'    => 'cadet',
-        'badges'  => []
-      }
+      begin
+        badges_after = {
+          'id'      => params[:username],
+          'type'    => 'cadet',
+          'badges'  => []
+        }
 
-      CodeBadges::CodecademyBadges.get_badges(params[:username]).each do |title, date|
-        badges_after['badges'].push('id' => title, 'date' => date)
+        CodeBadges::CodecademyBadges.get_badges(params[:username]).each do |title, date|
+          badges_after['badges'].push('id' => title, 'date' => date)
+        end
+      rescue
+        halt 404
+      else
+        badges_after
       end
-      badges_after
     end
 
     def check_badges(usernames, badges)
-      @check_info = {}
-      usernames.each do |username|
-        badges_found = CodeBadges::CodecademyBadges.get_badges(username).keys
-        @check_info[username] = \
-          badges.select { |badge| !badges_found.include? badge }
+      begin
+        @check_info = {}
+        usernames.each do |username|
+          badges_found = CodeBadges::CodecademyBadges.get_badges(username).keys
+          @check_info[username] = \
+            badges.select { |badge| !badges_found.include? badge }
+        end
+      rescue
+        halt 404
+      else
+        @check_info
       end
-      @check_info
     end
 
     def count_per_day(badges_info)
@@ -60,7 +70,7 @@ class CodecadetApp < Sinatra::Base
   get '/user' do
     haml :user
   end
-
+ 
   get '/user/:username' do
     begin
       @badges_found = CodeBadges::CodecademyBadges.get_badges(params[:username])
@@ -72,12 +82,12 @@ class CodecadetApp < Sinatra::Base
     end
   end
 
-  post '/result' do
-    redirect to("/user/#{params[:username]}")
-  end
-
   get '/group' do
     haml :group
+  end
+
+  post '/result' do
+    redirect to("/user/#{params[:username]}")
   end
 
   get '/api/v1/cadet/:username.json' do
@@ -86,10 +96,10 @@ class CodecadetApp < Sinatra::Base
   end
 
   post '/api/v1/group' do
-    content_type :json
-    usernames = params[:usernames].split("\r\n")
-    badges = params[:badges].split("\r\n")
-    check_badges(usernames, badges).to_json
+      content_type :json
+      usernames = params[:usernames].split("\r\n")
+      badges = params[:badges].split("\r\n")
+      check_badges(usernames, badges).to_json
   end
 
   post '/api/v1/user' do
