@@ -9,8 +9,8 @@ require 'sinatra/flash'
 require 'httparty'
 
 ##
-# Simple version of CodeCadetApp from https://github.com/ISS-SOA/codecadet
-class CodecadetApp < Sinatra::Base
+# Web application to track progress on Codecademy
+class Prognition < Sinatra::Base
   enable :sessions
   register Sinatra::Flash
   use Rack::MethodOverride
@@ -23,7 +23,7 @@ class CodecadetApp < Sinatra::Base
     set :session_secret, "something"    # ignore if not using shotgun in development
   end
 
-  API_BASE_URI = 'http://localhost:9393'
+  API_BASE_URI = 'http://cadetservice.herokuapp.com'
 
   helpers do
     def user
@@ -153,11 +153,11 @@ class CodecadetApp < Sinatra::Base
 
   # API handlers
   get '/api/v1/?' do
-    'Simplecadet api/v2 is deprecated: please use <a href="/api/v2/">api/v2</a>'
+    'Prognition api/v2 is deprecated: please use <a href="/api/v2/">api/v2</a>'
   end
 
   get '/api/v2/?' do
-    'Simplecadet api/v2 is up and working'
+    'Prognition api/v2 is up and working'
   end
 
   get '/api/v2/cadet/:username.json' do
