@@ -1,5 +1,6 @@
 source 'http://rubygems.org'
 
+gem 'thin'
 gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'json'
@@ -9,16 +10,8 @@ gem 'sinatra-flash'
 gem 'haml'
 gem 'tilt'
 
-gem 'activerecord'
-gem 'sinatra-activerecord'
-
 group :development do
-  gem 'sqlite3'
   gem 'tux'
-end
-
-group :production do
-  gem 'pg'
 end
 
 group :test do
