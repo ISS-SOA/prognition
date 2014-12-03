@@ -1,6 +1,5 @@
 require 'sinatra/base'
 require 'json'
-require_relative 'model/tutorial'
 
 require 'haml'
 require 'sinatra/flash'
@@ -26,21 +25,6 @@ class Prognition < Sinatra::Base
   API_VER = '/api/v2/'
 
   helpers do
-    def check_badges(usernames, badges)
-      @incomplete = {}
-      begin
-        usernames.each do |username|
-          badges_found = CodeBadges::CodecademyBadges.get_badges(username).keys
-          @incomplete[username] = \
-                  badges.reject { |badge| badges_found.include? badge }
-        end
-      rescue
-        halt 404
-      else
-        @incomplete
-      end
-    end
-
     def current_page?(path = ' ')
       path_info = request.path_info
       path_info += ' ' if path_info == '/'
@@ -116,18 +100,14 @@ class Prognition < Sinatra::Base
 
   get '/tutorials/:id' do
     if session[:action] == :create
-      logger.info "ACTION: #{session[:action]}"
       session[:action] = nil
       @results = JSON.parse(session[:result])
       @usernames = session[:usernames]
       @badges = session[:badges]
     else
-      logger.info "ACTION: else"
       request_url = "#{API_BASE_URI}/api/v2/tutorials/#{params[:id]}"
-      logger.info "\tREQUEST_URL: #{request_url}"
       options =  { headers: { 'Content-Type' => 'application/json' } }
       result = HTTParty.get(request_url, options)
-      logger.info "\tRESULT: #{result}"
       @results = result
     end
 
