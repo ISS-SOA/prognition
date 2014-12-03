@@ -1,5 +1,4 @@
 require 'sinatra/base'
-require 'codebadges'
 require 'json'
 require_relative 'model/tutorial'
 
@@ -24,24 +23,9 @@ class Prognition < Sinatra::Base
   end
 
   API_BASE_URI = 'http://cadetservice.herokuapp.com'
+  API_VER = '/api/v2/'
 
   helpers do
-    def user
-      username = params[:username]
-      return nil unless username
-
-      badges_after = { 'id' => username, 'type' => 'cadet', 'badges' => [] }
-
-      begin
-        CodeBadges::CodecademyBadges.get_badges(username).each do |title, date|
-          badges_after['badges'].push('id' => title, 'date' => date)
-        end
-        badges_after
-      rescue
-        nil
-      end
-    end
-
     def check_badges(usernames, badges)
       @incomplete = {}
       begin
@@ -63,6 +47,10 @@ class Prognition < Sinatra::Base
       request_path = path_info.split '/'
       request_path[1] == path
     end
+
+    def api_url(resource)
+      URI.join(API_BASE_URI, API_VER, resource).to_s
+    end
   end
 
   get '/' do
@@ -80,11 +68,11 @@ class Prognition < Sinatra::Base
   end
 
   get '/cadet/:username' do
-    @cadet = user
     @username = params[:username]
+    @cadet = HTTParty.get api_url("cadet/#{@username}.json")
 
     if @username && @cadet.nil?
-      flash[:notice] = 'username not found' if @cadet.nil?
+      flash[:notice] = "user #{@username} not found" if @cadet.nil?
       redirect '/cadet'
       return nil
     end

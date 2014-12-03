@@ -2,7 +2,6 @@ source 'http://rubygems.org'
 
 gem 'sinatra'
 gem 'sinatra-contrib'
-gem 'codebadges'
 gem 'json'
 gem 'httparty'
 
