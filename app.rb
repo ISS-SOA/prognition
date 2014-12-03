@@ -128,13 +128,18 @@ class Prognition < Sinatra::Base
 
   get '/tutorials/:id' do
     if session[:action] == :create
+      logger.info "ACTION: #{session[:action]}"
+      session[:action] = nil
       @results = JSON.parse(session[:result])
       @usernames = session[:usernames]
       @badges = session[:badges]
     else
+      logger.info "ACTION: else"
       request_url = "#{API_BASE_URI}/api/v2/tutorials/#{params[:id]}"
+      logger.info "\tREQUEST_URL: #{request_url}"
       options =  { headers: { 'Content-Type' => 'application/json' } }
       result = HTTParty.get(request_url, options)
+      logger.info "\tRESULT: #{result}"
       @results = result
     end
 
@@ -148,65 +153,5 @@ class Prognition < Sinatra::Base
     result = HTTParty.delete(request_url)
     flash[:notice] = 'record of tutorial deleted'
     redirect '/tutorials'
-  end
-
-
-  # API handlers
-  get '/api/v1/?' do
-    'Prognition api/v2 is deprecated: please use <a href="/api/v2/">api/v2</a>'
-  end
-
-  get '/api/v2/?' do
-    'Prognition api/v2 is up and working'
-  end
-
-  get '/api/v2/cadet/:username.json' do
-    content_type :json
-    user.nil? ? halt(404) : user.to_json
-  end
-
-  delete '/api/v2/tutorials/:id' do
-    tutorial = Tutorial.destroy(params[:id])
-  end
-
-  post '/api/v2/tutorials' do
-    content_type :json
-
-    body = request.body.read
-    logger.info body
-
-    begin
-      req = JSON.parse(body)
-      logger.info req
-    rescue Exception => e
-      puts e.message
-      halt 400
-    end
-
-    tutorial = Tutorial.new
-    tutorial.description = req['description'].to_json
-    tutorial.usernames = req['usernames'].to_json
-    tutorial.badges = req['badges'].to_json
-
-    if tutorial.save
-      redirect "/api/v2/tutorials/#{tutorial.id}"
-    end
-  end
-
-  get '/api/v2/tutorials/:id' do
-    content_type :json
-    logger.info "GET /api/v2/tutorials/#{params[:id]}"
-    begin
-      @tutorial = Tutorial.find(params[:id])
-      usernames = JSON.parse(@tutorial.usernames)
-      badges = JSON.parse(@tutorial.badges)
-      logger.info({ usernames: usernames, badges: badges }.to_json)
-    rescue
-      halt 400
-    end
-
-    result = check_badges(usernames, badges).to_json
-    logger.info "result: #{result}\n"
-    result
   end
 end

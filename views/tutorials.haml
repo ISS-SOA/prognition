@@ -33,7 +33,7 @@
             %td
               = user
               %br
-              - if missing.count > 0
+              - if missing
                 = "#{missing.count} badges missing"
               - else
                 = "no badges missing"
