@@ -3,6 +3,7 @@ require 'json'
 
 require 'haml'
 require 'sinatra/flash'
+require 'chartkick'
 
 require 'httparty'
 
@@ -35,6 +36,17 @@ class Prognition < Sinatra::Base
     def api_url(resource)
       URI.join(API_BASE_URI, API_VER, resource).to_s
     end
+
+    def date_count(badges)
+      dates = Hash.new(0)
+      badges.each { |badge| dates[Date.parse(badge['date'])] += 1 }
+      (dates.keys.min..dates.keys.max).each do |date|
+         if dates[date] == 0
+           dates[date] = 0
+         end
+      end
+      dates
+    end
   end
 
   get '/' do
@@ -54,6 +66,7 @@ class Prognition < Sinatra::Base
   get '/cadet/:username' do
     @username = params[:username]
     @cadet = HTTParty.get api_url("cadet/#{@username}.json")
+    @dates = date_count(@cadet['badges'])
 
     if @username && @cadet.nil?
       flash[:notice] = "user #{@username} not found" if @cadet.nil?
