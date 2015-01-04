@@ -1,3 +1,7 @@
+%head
+  %script{:src => '//www.google.com/jsapi', :type => 'text/javascript'}
+  %script{:src => '/chartkick.js', :type => 'text/javascript'}
+
 .container
 
   %form{action: '/cadet', method: 'get', id: 'user-form'}
@@ -6,6 +10,7 @@
   %p
 
   -if @cadet
+    = line_chart @dates, id: "progress", height: "300px"
     %table{class: 'center'}
       %tbody
         %tr
