@@ -22,7 +22,7 @@ class Prognition < Sinatra::Base
     set :session_secret, "something"    # ignore if not using shotgun in development
   end
 
-  API_BASE_URI = 'http://cadetservice.herokuapp.com'
+  API_BASE_URI = 'http://cadetdynamo.herokuapp.com'
   API_VER = '/api/v2/'
 
   helpers do
