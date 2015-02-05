@@ -1,11 +1,10 @@
-#header_wrapper
-  %nav{:id => 'menu'}
-    %ul
-      - tabs = %w[cadet tutorial]
-      - tabs.map do |page|
-        - if current_page?("#{page}")
-          %li{:class => 'current_page_item'}
-            %a{:href => "/#{page}", :id => "#{page}"} #{page}
-        - else
-          %li
-            %a{:href => "/#{page}", :id => "#{page}"} #{page}
+%ul{class:'nav nav-tabs'}
+  - tabs = %w[cadet tutorial]
+  - tabs.each do |page|
+    - if current_page?("#{page}")
+      %li{class: 'active'}
+        %a{href: "/#{page}", id: "#{page}"} #{page}
+    - else
+      %li
+        %a{href: "/#{page}", id: "#{page}"} #{page}
+%p{style: 'margin-bottom: 1cm'}

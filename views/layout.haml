@@ -1,13 +1,21 @@
 !!! 5
-%html
+%html{:lang => 'en'}
   %head
-    %title Prognition
-    %link{href: '/style.css', media: 'screen, projection', rel: 'stylesheet'}
+    %title Bootstrap Grid Example
+    %meta{:charset => 'utf-8'}
+    %meta{name: 'viewport', content: 'width=device-width, initial-scale=1'}
+    %link{rel:'stylesheet', href:'http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css'}
+    %script{src:'https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'}
+    %script{src:'http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'}
+
   %body
-    %header
+    %div{class:'container'}
+      %div{class:'jumbotron'}
+        %h1 Prognition
+        %p Monitor your progress on Codecademy
       = haml :nav
-    %section
-      = styled_flash
-      = yield
-    .footer
-      = haml :footer
+
+      %div
+        = styled_flash
+        = yield
+        = haml :footer
