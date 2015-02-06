@@ -50,10 +50,11 @@ class Prognition < Sinatra::Base
   end
 
   get '/' do
-    haml :home
+    #haml :home
+    redirect '/cadet'
   end
 
-  get '/cadet' do
+  get '/cadet/?' do
     @username = params[:username]
     if @username
       redirect "/cadet/#{@username}"
