@@ -10,14 +10,18 @@
       %label{:for => 'check-usernames'} Usernames
       %br
       - if @usernames
-        = find_and_preserve "<textarea cols=\"35\" id=\"check-usernames\" name=\"usernames\" rows=\"10\">#{@usernames.join("\r\n")}</textarea>"
+        = find_and_preserve do
+          %textarea{class:'form-control', :id => 'check-usernames', :name => 'usernames', :rows => '10', :cols => '35', placeholder: 'Enter one username per line'}
+            #{@usernames.join("\r\n")}
       - else
         %textarea{class:'form-control', :id => 'check-usernames', :name => 'usernames', :rows => '10', :cols => '35', placeholder: 'Enter one username per line'}
     %div{class:'col-md-6'}
-      %label{:for => 'check-badges'} Badge names
+      %label{:for => 'check-badges'} Badges names
       %br
       - if @usernames
-        = find_and_preserve "<textarea cols=\"35\" id=\"check-badges\" name=\"badges\" rows=\"10\">#{@badges.join("\r\n")}</textarea>"
+        = find_and_preserve do
+          %textarea{class:'form-control', :id => 'check-badges', :name => 'badges', :rows => '10', :cols => '35', placeholder: 'Enter badges to check, one per line'}
+            #{@badges.join("\r\n")}
       - else
         %textarea{class:'form-control', :id => 'check-badges', :name => 'badges', :rows => '10', :cols => '35', placeholder: 'Enter badges to check, one per line'}
   %div{class:'row', style:'margin-top: 1cm'}
@@ -25,24 +29,26 @@
       %button{type:'submit', class: 'btn btn-default', :value => 'submit', :id => 'check-submit'}
         %span{class: 'glyphicon glyphicon-search'}
         Search
-%form{:action => "/tutorials/#{@id}", :method => 'post', :id => 'delete-form'}
-  - if @action == :update
-    %input{:type => 'submit', :name => '_method', :value => 'delete', :class => 'delete'}
+      %form{role: 'form', :action => "/tutorials/#{@id}", :method => 'post', :id => 'delete-form'}
+        - if @action == :update
+          %button{type: 'submit', class: 'btn btn-default', :name => '_method', :value => 'delete'}
+            %span{class: 'glyphicon glyphicon-remove'}
+            Delete these results
 - if @results
-  %h1 Results
-  %table{class: 'center'}
-    %tbody
+  %table{class: 'table'}
+    %thead
       %tr
         %th Username
         %th Badges Missing
+    %tbody
       - @results.each do |user, missing|
         %tr
           %td
-            = user
+            %span{class: 'lead'} #{user}
             %br
-            - if missing
-              = "#{missing.count} badges missing"
+            - if missing.count > 0
+              %span{class: 'small bg-danger', style: 'bg-danger'} #{missing.count} missing
             - else
-              = "no badges missing"
+              %span{class: 'small'} none missing
           %td
             = missing.join ", "
