@@ -1,10 +1,7 @@
 %ul{class:'nav nav-tabs'}
-  - tabs = %w[cadet tutorial]
-  - tabs.each do |page|
-    - if current_page?("#{page}")
-      %li{class: 'active'}
-        %a{href: "/#{page}", id: "#{page}"} #{page}
-    - else
-      %li
-        %a{href: "/#{page}", id: "#{page}"} #{page}
+  - tabs = {cadet:'Search for a Cadet', tutorials:'Check a Group'}
+  - tabs.each do |resource, title|
+    - tab_class = current_page?("#{resource}") ? 'active' : ''
+    %li{class: "#{tab_class}"}
+      %a{href: "/#{resource}"} #{title}
 %p{style: 'margin-bottom: 1cm'}
