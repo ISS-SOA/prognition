@@ -7,6 +7,7 @@
     %link{rel:'stylesheet', href:'http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css'}
     %script{src:'https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'}
     %script{src:'http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'}
+    %link{rel:'stylesheet', href:'/custom.css'}
 
   %body
     %div{class:'container'}
@@ -16,6 +17,7 @@
       = haml :nav
 
       %div
+        -# %div{class: 'bg-danger text-danger'}
         = styled_flash
         = yield
         = haml :footer
