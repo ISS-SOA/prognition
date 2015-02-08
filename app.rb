@@ -112,25 +112,32 @@ class Prognition < Sinatra::Base
     session[:usernames] = usernames
     session[:badges] = badges
     session[:action] = :create
+    flash[:info] = 'You may bookmark this query to return later for updated results'
     redirect "/tutorials/#{id}"
   end
 
   get '/tutorials/:id' do
-    if session[:action] == :create
-      session[:action] = nil
-      @results = JSON.parse(session[:result])
-      @usernames = session[:usernames]
-      @badges = session[:badges]
-    else
-      request_url = "#{API_BASE_URI}/api/v2/tutorials/#{params[:id]}"
-      options =  { headers: { 'Content-Type' => 'application/json' } }
-      result = HTTParty.get(request_url, options)
-      @results = result
-    end
+    begin
+      @id = params[:id]
 
-    @id = params[:id]
-    @action = :update
-    haml :tutorials
+      if session[:action] == :create
+        session[:action] = nil
+        @results = JSON.parse(session[:result])
+        @usernames = session[:usernames]
+        @badges = session[:badges]
+      else
+        request_url = "#{API_BASE_URI}/api/v2/tutorials/#{@id}"
+        options =  { headers: { 'Content-Type' => 'application/json' } }
+        result = HTTParty.get(request_url, options)
+        @results = result
+      end
+
+      @action = :update
+      haml :tutorials
+    rescue
+      flash[:notice] = 'Could not find previous query -- it may have been deleted'
+      redirect '/tutorials'
+    end
   end
 
   delete '/tutorials/:id' do
