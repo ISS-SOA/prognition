@@ -10,14 +10,15 @@
     %link{rel:'stylesheet', href:'/custom.css'}
 
   %body
-    %div{class:'container'}
-      %div{class:'jumbotron'}
+    %div{class:'container', id:'html_body'}
+      %div{id:'header', class:'jumbotron'}
         %h1 Prognition
         %p Monitor your progress on Codecademy
-      = haml :nav
-
-      %div
-        -# %div{class: 'bg-danger text-danger'}
+      %div{id: 'navbar'}
+        = haml :nav
         = styled_flash
+        %p{style: 'margin-bottom: 1cm'}
+      %div{id:'content'}
         = yield
+      %div{id:'footer'}
         = haml :footer
