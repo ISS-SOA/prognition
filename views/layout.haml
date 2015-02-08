@@ -7,15 +7,18 @@
     %link{rel:'stylesheet', href:'http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css'}
     %script{src:'https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'}
     %script{src:'http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'}
+    %link{rel:'stylesheet', href:'/custom.css'}
 
   %body
-    %div{class:'container'}
-      %div{class:'jumbotron'}
+    %div{class:'container', id:'html_body'}
+      %div{id:'header', class:'jumbotron'}
         %h1 Prognition
         %p Monitor your progress on Codecademy
-      = haml :nav
-
-      %div
+      %div{id: 'navbar'}
+        = haml :nav
         = styled_flash
+        %p{style: 'margin-bottom: 1cm'}
+      %div{id:'content'}
         = yield
+      %div{id:'footer'}
         = haml :footer
