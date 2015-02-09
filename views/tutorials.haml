@@ -11,33 +11,34 @@
       %br
       = find_and_preserve do
         %textarea{class:'form-control', :id => 'check-usernames', :name => 'usernames', :rows => '10', :cols => '35', placeholder: 'Enter one username per line'}
-          - if @usernames
-            #{@usernames.join("\r\n")}
+          - if @results
+            #{@results['usernames'].join("\r\n")}
     %div{class:'col-md-6'}
       %label{:for => 'check-badges'} Badges names
       %br
       = find_and_preserve do
         %textarea{class:'form-control', :id => 'check-badges', :name => 'badges', :rows => '10', :cols => '35', placeholder: 'Enter badges to check, one per line'}
-          - if @usernames
-            #{@badges.join("\r\n")}
+          - if @results
+            #{@results['badges'].join("\r\n")}
   %div{class:'row', style:'margin-top: 1cm'}
     %div{class:'col-md-12'}
       %button{type:'submit', class: 'btn btn-default', :value => 'submit', :id => 'check-submit'}
         %span{class: 'glyphicon glyphicon-search'}
         Search
-%form{role: 'form', action: "/tutorials/#{@id}", :method => 'post', :id => 'delete-form'}
-  - if @action == :update
+
+- if @results
+  %form{role: 'form', action: "/tutorials/#{@id}", :method => 'post', :id => 'delete-form'}
     %button{type: 'submit', class: 'btn btn-default', :name => '_method', :value => 'delete'}
       %span{class: 'glyphicon glyphicon-remove'}
       Delete these results
-- if @results
+
   %table{class: 'table'}
     %thead
       %tr
         %th Username
         %th Badges Missing
     %tbody
-      - @results.each do |user, missing|
+      - @results['missing'].each do |user, missing|
         %tr
           %td
             %span{class: 'lead'} #{user}

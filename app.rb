@@ -87,7 +87,7 @@ class Prognition < Sinatra::Base
   end
 
   post '/tutorials' do
-    request_url = "#{API_BASE_URI}/api/v2/tutorials"
+    request_url = "#{API_BASE_URI}/api/v3/tutorials"
     usernames = params[:usernames].split("\r\n")
     badges = params[:badges].split("\r\n")
     params_h = {
@@ -99,18 +99,15 @@ class Prognition < Sinatra::Base
                   headers: { 'Content-Type' => 'application/json' }
                }
 
-    result = HTTParty.post(request_url, options)
+    results = HTTParty.post(request_url, options)
 
-    if (result.code != 200)
+    if (results.code != 200)
       flash[:notice] = 'usernames not found'
       redirect '/tutorials'
       return nil
     end
 
-    id = result.request.last_uri.path.split('/').last
-    session[:result] = result.to_json
-    session[:usernames] = usernames
-    session[:badges] = badges
+    id = results.request.last_uri.path.split('/').last
     session[:action] = :create
     flash[:info] = 'You may bookmark this query to return later for updated results'
     redirect "/tutorials/#{id}"
@@ -122,15 +119,14 @@ class Prognition < Sinatra::Base
 
       if session[:action] == :create
         session[:action] = nil
-        @results = JSON.parse(session[:result])
-        @usernames = session[:usernames]
-        @badges = session[:badges]
+        cached = 'true'
       else
-        request_url = "#{API_BASE_URI}/api/v2/tutorials/#{@id}"
-        options =  { headers: { 'Content-Type' => 'application/json' } }
-        result = HTTParty.get(request_url, options)
-        @results = result
+        cached = 'false'
       end
+
+      request_url = "#{API_BASE_URI}/api/v3/tutorials/#{@id}?from_cache=#{cached}"
+      options =  { headers: { 'Content-Type' => 'application/json' } }
+      @results = HTTParty.get(request_url, options)
 
       @action = :update
       haml :tutorials
