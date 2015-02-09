@@ -2,7 +2,6 @@ require 'sinatra/base'
 require 'json'
 
 require 'haml'
-require 'sinatra/flash'
 require 'chartkick'
 
 require 'httparty'
@@ -10,8 +9,7 @@ require 'httparty'
 ##
 # Web application to track progress on Codecademy
 class Prognition < Sinatra::Base
-  enable :sessions
-  register Sinatra::Flash
+  use Rack::Session::Pool
   use Rack::MethodOverride
 
   configure :production, :development do
@@ -72,7 +70,7 @@ class Prognition < Sinatra::Base
     end
 
     if @username && @cadet.nil?
-      flash[:notice] = "Could not find Codecademy user: #{@username}" if @cadet.nil?
+      session[:flash_error] = "Could not find Codecademy user: #{@username}" if @cadet.nil?
       redirect '/cadet'
       return nil
     end
@@ -82,7 +80,6 @@ class Prognition < Sinatra::Base
   end
 
   get '/tutorials' do
-    @action = :create
     haml :tutorials
   end
 
@@ -102,14 +99,15 @@ class Prognition < Sinatra::Base
     results = HTTParty.post(request_url, options)
 
     if (results.code != 200)
-      flash[:notice] = 'usernames not found'
+      session[:flash_error] = 'usernames not found'
       redirect '/tutorials'
       return nil
     end
 
+    session[:results] = results.to_json
+
     id = results.request.last_uri.path.split('/').last
-    session[:action] = :create
-    flash[:info] = 'You may bookmark this query to return later for updated results'
+    session[:flash_notice] = 'You may bookmark this query to return later for updated results'
     redirect "/tutorials/#{id}"
   end
 
@@ -117,21 +115,18 @@ class Prognition < Sinatra::Base
     begin
       @id = params[:id]
 
-      if session[:action] == :create
-        session[:action] = nil
-        cached = 'true'
+      if session[:results]
+        @results = JSON.parse session[:results]
+        session[:results] = nil
       else
-        cached = 'false'
+        request_url = "#{API_BASE_URI}/api/v3/tutorials/#{@id}"
+        options =  { headers: { 'Content-Type' => 'application/json' } }
+        @results = HTTParty.get(request_url, options)
       end
 
-      request_url = "#{API_BASE_URI}/api/v3/tutorials/#{@id}?from_cache=#{cached}"
-      options =  { headers: { 'Content-Type' => 'application/json' } }
-      @results = HTTParty.get(request_url, options)
-
-      @action = :update
       haml :tutorials
     rescue
-      flash[:notice] = 'Could not find previous query -- it may have been deleted'
+      session[:flash_error] = 'Could not find results of previous query -- it may have been deleted'
       redirect '/tutorials'
     end
   end
@@ -139,7 +134,7 @@ class Prognition < Sinatra::Base
   delete '/tutorials/:id' do
     request_url = "#{API_BASE_URI}/api/v2/tutorials/#{params[:id]}"
     result = HTTParty.delete(request_url)
-    flash[:info] = 'Previous group search results deleted'
+    session[:flash_notice] = 'Previous group search results deleted'
     redirect '/tutorials'
   end
 end
