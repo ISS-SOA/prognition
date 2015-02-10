@@ -1,36 +1,47 @@
 
 %form{role: 'form', :action => '/tutorials', :method => 'post', :id => 'check-form'}
-  %div{class:'row'}
-    %div{class:'col-md-6'}
-
-    %div{class:'col-md-6'}
-
-  %div{class:'row'}
+  %div{class:'row cadet-form'}
+    %label{for: 'input-description', class: 'col-md-2'} Description
+    %div{class:'col-md-10'}
+      - description = @results ? @results['description'] : nil
+      %input{class: 'form-control required', type: 'text', name: 'description', id: 'input-description', placeholder: 'Enter a description of your search', value: "#{description}"}
+  %div{class:'row cadet-form'}
     %div{class:'col-md-6'}
       %label{:for => 'check-usernames'} Usernames
       %br
       = find_and_preserve do
-        %textarea{class:'form-control', :id => 'check-usernames', :name => 'usernames', :rows => '10', :cols => '35', placeholder: 'Enter one username per line'}
+        %textarea{class:'form-control', :id => 'check-usernames', :name => 'usernames', :rows => '10', :cols => '35', placeholder: 'Enter usernames to check, one per line'}
           - if @results
             #{@results['usernames'].join("\r\n")}
     %div{class:'col-md-6'}
-      %label{:for => 'check-badges'} Badges names
+      %label{:for => 'check-badges'} Badges to Check
       %br
       = find_and_preserve do
         %textarea{class:'form-control', :id => 'check-badges', :name => 'badges', :rows => '10', :cols => '35', placeholder: 'Enter badges to check, one per line'}
           - if @results
             #{@results['badges'].join("\r\n")}
-  %div{class:'row', style:'margin-top: 1cm'}
-    %div{class:'col-md-12'}
-      %button{type:'submit', class: 'btn btn-default', :value => 'submit', :id => 'check-submit'}
-        %span{class: 'glyphicon glyphicon-search'}
-        Search
+  %div{class:'row cadet-form'}
+    - unless @results
+      %div{class:'col-md-4 text-center'}
+      %div{class:'col-md-4 text-center'}
+        %button{class: 'btn btn-default btn-block', type:'submit', :value => 'POST', :id => 'btn-search'}
+          %span{class: 'glyphicon glyphicon-search'}
+          Search
+      %div{class:'col-md-4 text-center'}
 
 - if @results
-  %form{role: 'form', action: "/tutorials/#{@id}", :method => 'post', :id => 'delete-form'}
-    %button{type: 'submit', class: 'btn btn-default', :name => '_method', :value => 'delete'}
-      %span{class: 'glyphicon glyphicon-remove'}
-      Delete these results
+  %form{role: 'form', action: "/tutorials/#{@id}", :method => 'POST', :id => 'delete-form'}
+    %div{class:'col-md-4 text-center'}
+    %div{class:'col-md-4 text-center'}
+      -# %button{class: 'btn btn-default', type:'submit', name: '_method', value: 'PUT', :id => 'btn-update'}
+      -#   %span{class: 'glyphicon glyphicon-edit'}
+      -#   Update
+      %button{class: 'btn btn-default', type:'submit', name: '_method', value: 'DELETE', :id => 'btn-delete'}
+        %span{class: 'glyphicon glyphicon-remove'}
+        Delete
+      %br
+      %a{href: '/tutorials'} New Query
+    %div{class:'col-md-4 text-center'}
 
   %table{class: 'table'}
     %thead

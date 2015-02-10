@@ -88,18 +88,20 @@ class Prognition < Sinatra::Base
   end
 
   post '/tutorials' do
-    request_url = cadet_api_url 'tutorials'
+    description = params[:description].strip
     usernames = array_strip params[:usernames].split("\r\n")
     badges = array_strip params[:badges].split("\r\n")
-    params_h = {
-      usernames: usernames,
-      badges: badges
-    }
 
+    if (description.empty? || usernames.empty? || badges.empty?)
+      session[:flash_error] = 'All fields are required'
+      redirect '/tutorials'
+      return
+    end
+
+    request_url = cadet_api_url 'tutorials'
+    params_h = {description: description, usernames: usernames, badges: badges}
     options =  {  body: params_h.to_json,
-                  headers: { 'Content-Type' => 'application/json' }
-               }
-
+                  headers: { 'Content-Type' => 'application/json' } }
     results = HTTParty.post(request_url, options)
 
     if (results.code != 200)
@@ -134,6 +136,21 @@ class Prognition < Sinatra::Base
       redirect '/tutorials'
     end
   end
+
+  # put '/tutorials/:id' do
+  #   begin
+  #     @id = params[:id]
+  #       request_url = cadet_api_url "tutorials/#{@id}"
+  #       options =  { headers: { 'Content-Type' => 'application/json' } }
+  #       @results = HTTParty.put(request_url, options)
+  #     end
+  #
+  #     haml :tutorials
+  #   rescue
+  #     session[:flash_error] = 'Sorry -- we could not update that query'
+  #     redirect "/tutorials/#{@id}"
+  #   end
+  # end
 
   delete '/tutorials/:id' do
     request_url = cadet_api_url "tutorials/#{params[:id]}"
