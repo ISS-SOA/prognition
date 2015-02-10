@@ -45,6 +45,10 @@ class Prognition < Sinatra::Base
       end
       dates
     end
+
+    def array_strip(str_arr)
+      str_arr.map(&:strip).reject(&:empty?)
+    end
   end
 
   get '/' do
@@ -62,7 +66,7 @@ class Prognition < Sinatra::Base
   end
 
   get '/cadet/:username' do
-    @username = params[:username]
+    @username = params[:username].strip
     begin
       @cadet = HTTParty.get cadet_api_url("cadet/#{@username}.json")
     rescue
@@ -85,8 +89,8 @@ class Prognition < Sinatra::Base
 
   post '/tutorials' do
     request_url = cadet_api_url 'tutorials'
-    usernames = params[:usernames].split("\r\n")
-    badges = params[:badges].split("\r\n")
+    usernames = array_strip params[:usernames].split("\r\n")
+    badges = array_strip params[:badges].split("\r\n")
     params_h = {
       usernames: usernames,
       badges: badges
