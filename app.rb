@@ -17,11 +17,11 @@ class Prognition < Sinatra::Base
   end
 
   configure :development do
-    set :session_secret, "something"    # ignore if not using shotgun in development
+    #set :session_secret, "something"    # ignore if not using shotgun in development
   end
 
   API_BASE_URI = 'http://cadetdynamo.herokuapp.com'
-  API_VER = '/api/v2/'
+  API_VER = '/api/v3/'
 
   helpers do
     def current_page?(path = ' ')
@@ -31,7 +31,7 @@ class Prognition < Sinatra::Base
       request_path[1] == path
     end
 
-    def api_url(resource)
+    def cadet_api_url(resource)
       URI.join(API_BASE_URI, API_VER, resource).to_s
     end
 
@@ -64,7 +64,7 @@ class Prognition < Sinatra::Base
   get '/cadet/:username' do
     @username = params[:username]
     begin
-      @cadet = HTTParty.get api_url("cadet/#{@username}.json")
+      @cadet = HTTParty.get cadet_api_url("cadet/#{@username}.json")
     rescue
       @cadet = nil
     end
@@ -84,7 +84,7 @@ class Prognition < Sinatra::Base
   end
 
   post '/tutorials' do
-    request_url = "#{API_BASE_URI}/api/v3/tutorials"
+    request_url = cadet_api_url 'tutorials'
     usernames = params[:usernames].split("\r\n")
     badges = params[:badges].split("\r\n")
     params_h = {
@@ -119,7 +119,7 @@ class Prognition < Sinatra::Base
         @results = JSON.parse session[:results]
         session[:results] = nil
       else
-        request_url = "#{API_BASE_URI}/api/v3/tutorials/#{@id}"
+        request_url = cadet_api_url "tutorials/#{@id}"
         options =  { headers: { 'Content-Type' => 'application/json' } }
         @results = HTTParty.get(request_url, options)
       end
@@ -132,7 +132,7 @@ class Prognition < Sinatra::Base
   end
 
   delete '/tutorials/:id' do
-    request_url = "#{API_BASE_URI}/api/v2/tutorials/#{params[:id]}"
+    request_url = cadet_api_url "tutorials/#{params[:id]}"
     result = HTTParty.delete(request_url)
     session[:flash_notice] = 'Previous group search results deleted'
     redirect '/tutorials'
