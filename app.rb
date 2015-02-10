@@ -35,10 +35,12 @@ class Prognition < Sinatra::Base
       URI.join(API_BASE_URI, API_VER, resource).to_s
     end
 
-    def date_count(badges)
+    def date_count(badges, from: nil)
       dates = Hash.new(0)
       badges.each { |badge| dates[Date.parse(badge['date'])] += 1 }
-      (dates.keys.min..dates.keys.max).each do |date|
+      from ||= dates.keys.min
+
+      (from..dates.keys.max).each do |date|
          if dates[date] == 0
            dates[date] = 0
          end
@@ -58,7 +60,12 @@ class Prognition < Sinatra::Base
   get '/cadet/?' do
     @username = params[:username]
     if @username
-      redirect "/cadet/#{@username}"
+      unless params[:from_date].empty?
+        from_date = Date.parse params[:from_date]
+        from_query = "?from_date=#{from_date}"
+      end
+
+      redirect "/cadet/#{@username}#{from_query}"
       return nil
     end
 
@@ -79,7 +86,21 @@ class Prognition < Sinatra::Base
       return nil
     end
 
-    @dates = date_count(@cadet['badges'])
+    from_date = to_date = nil
+    if params[:from_date]
+      from_date = Date.parse(params[:from_date])
+      @cadet['badges'] = @cadet['badges'].select do |badge|
+        Date.parse(badge['date']) > from_date
+      end
+    end
+
+    if @cadet['badges'].count == 0
+      session[:flash_error] = "No badges found in that date range"
+      redirect "/cadet/#{@username}"
+      return nil
+    end
+
+    @dates = date_count(@cadet['badges'], from: from_date)
     haml :cadet
   end
 

@@ -1,11 +1,30 @@
+-# For chart:
 %script{:src => '//www.google.com/jsapi', :type => 'text/javascript'}
 %script{:src => '/chartkick.js', :type => 'text/javascript'}
+
+-# For DatePicker:
+%link{rel: "stylesheet", href: "//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css"}
+%link{rel: "stylesheet", href: "//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker3.min.css"}
+%script{src: "//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.min.js"}
+:javascript
+  $(document).ready(function() {
+    $('#from_datePicker').datepicker({
+        format: 'M-dd-yyyy'
+      })
+  });
+
 
 %p Search for user achievements on Codecademy:
 %form{role: 'form', class:'form-inline', action: '/cadet', method: 'get', id: 'user-form'}
   %div{class: 'form-group'}
     %label{for:'username-input'} Username:
     %input{type: 'text', class: 'form-control', name: 'username', id: 'username-input', placeholder: '(username required)', value: "#{@username}"}
+  %div{class: 'form-group'}
+    %label{class: 'control-label', for:'from_datePicker'} From:
+    %div{class: 'input-group input-append date', id: 'from_datePicker'}
+      %input{type: 'text', class: 'form-control', name: 'from_date', placeholder: 'e.g., Jan-24-2015'}
+      %span{class: 'input-group-addon add-on'}
+        %span{class: 'glyphicon glyphicon-calendar'}
   %button{type: 'submit', class: 'btn btn-default', id: 'submit-button', value: 'submit'}
     %span{class: 'glyphicon glyphicon-search'}
     Search
