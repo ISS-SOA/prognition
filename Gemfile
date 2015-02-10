@@ -13,6 +13,7 @@ gem 'chartkick'
 
 group :development do
   gem 'tux'
+  gem 'rerun'
 end
 
 group :test do
