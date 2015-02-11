@@ -1,5 +1,5 @@
 %ul{class:'nav nav-tabs'}
-  - tabs = {cadet:'Search for a Cadet', tutorials:'Check a Group'}
+  - tabs = {cadets:'Search for a Cadet', tutorials:'Check a Group'}
   - tabs.each do |resource, title|
     - tab_class = current_page?("#{resource}") ? 'active' : ''
     %li{class: "#{tab_class}"}

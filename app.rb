@@ -38,7 +38,7 @@ class Prognition < Sinatra::Base
       URI.join(API_BASE_URI, API_VER, resource).to_s
     end
 
-    def date_in_range?(date, from: nil, til: nil)
+    def date_in_open_range?(date, from: nil, til: nil)
       from_check = from ? from < date : true
       til_check = til ? date < til : true
 
@@ -75,42 +75,30 @@ class Prognition < Sinatra::Base
   end
 
   get '/cadets/?' do
-    @username = params[:username]
-    if @username
-      unless params[:from_date].nil? || params[:from_date].empty?
-        from_date = Date.parse params[:from_date]
-        from_query = "?from_date=#{from_date}"
+    if params[:username]
+      @username = params[:username].strip
+      @from_date = params[:from_date].blank? ? nil : Date.parse(params[:from_date])
+      @til_date = params[:until_date].blank? ? nil : Date.parse(params[:until_date])
+
+      begin
+        @cadet = HTTParty.get cadet_api_url("cadet/#{@username}.json")
+      rescue
+        error_send '/', "Could not access Codecademy – please try again later"
       end
 
-      redirect "/cadets/#{@username}#{from_query}"
-      return nil
+      error_send '/cadets', "Could not find a Codecademy user named: #{@username}" \
+        if @username && @cadet.nil?
+
+      @cadet['badges'] = @cadet['badges'].select do |badge|
+        date_in_open_range?(Date.parse(badge['date']), from: @from_date, til: @til_date)
+      end
+
+      error_send "/cadets?username=#{@username}", "No badges found within those dates" \
+        if @cadet['badges'].count == 0
+
+      @dates = date_count(@cadet['badges'], from: @from_date, til: @til_date)
     end
 
-    haml :cadet
-  end
-
-  get '/cadets/:username' do
-    @username = params[:username].strip
-    from_date = params[:from_date] ? Date.parse(params[:from_date]) : nil
-    til_date = params[:until_date] ? Date.parse(params[:until_date]) : nil
-
-    begin
-      @cadet = HTTParty.get cadet_api_url("cadet/#{@username}.json")
-    rescue
-      error_send back, "Could not access Codecademy – please try again later"
-    end
-
-    error_send back, "Could not find a Codecademy user named: #{@username}" \
-      if @username && @cadet.nil?
-
-    @cadet['badges'] = @cadet['badges'].select do |badge|
-      date_in_range?(Date.parse(badge['date']), from: from_date, til: til_date)
-    end
-
-    error_send "/cadets/#{@username}", "No badges found within those dates" \
-      if @cadet['badges'].count == 0
-
-    @dates = date_count(@cadet['badges'], from: from_date, til: til_date)
     haml :cadet
   end
 
@@ -160,6 +148,7 @@ class Prognition < Sinatra::Base
     end
   end
 
+  ## TODO:
   # put '/tutorials/:id' do
   #   begin
   #     @id = params[:id]
