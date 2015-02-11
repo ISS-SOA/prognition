@@ -6,10 +6,12 @@ gem 'sinatra-contrib'
 gem 'json'
 gem 'httparty'
 
-gem 'sinatra-flash'
+gem 'rack-flash3'
 gem 'haml'
 gem 'tilt'
 gem 'chartkick'
+
+gem 'activesupport'
 
 group :development do
   gem 'tux'

@@ -11,3 +11,13 @@
 h1.username {
   text-align: center
 }
+
+.row.cadet-form {
+  margin-bottom: 10px
+}
+
+/* For DatePicker */
+#eventForm .form-control-feedback {
+    top: 0;
+    right: -15px;
+}
