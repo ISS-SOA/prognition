@@ -1,4 +1,5 @@
 require 'sinatra/base'
+require 'rack-flash'
 require 'json'
 
 require 'haml'
@@ -12,8 +13,9 @@ require 'active_support/core_ext'
 ##
 # Web application to track progress on Codecademy
 class Prognition < Sinatra::Base
-  use Rack::Session::Pool
   use Rack::MethodOverride
+  use Rack::Session::Pool
+  use Rack::Flash
 
   configure :production, :development do
     enable :logging
@@ -64,7 +66,7 @@ class Prognition < Sinatra::Base
     end
 
     def error_send(url, msg)
-      session[:flash_error] = msg
+      flash[:error] = msg
       redirect url
       halt 303        # http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
     end
@@ -78,7 +80,7 @@ class Prognition < Sinatra::Base
     if params[:username]
       @username = params[:username].strip
       @from_date = params[:from_date].blank? ? nil : Date.parse(params[:from_date])
-      @til_date = params[:until_date].blank? ? nil : Date.parse(params[:until_date])
+      @til_date = params[:til_date].blank? ? nil : Date.parse(params[:til_date])
 
       begin
         @cadet = HTTParty.get cadet_api_url("cadet/#{@username}.json")
@@ -125,7 +127,7 @@ class Prognition < Sinatra::Base
     session[:results] = results.to_json
 
     id = results.request.last_uri.path.split('/').last
-    session[:flash_notice] = 'You may bookmark this query to return later for updated results'
+    flash[:notice] = 'You may bookmark this query to return later for updated results'
     redirect "/tutorials/#{id}"
   end
 
@@ -159,15 +161,14 @@ class Prognition < Sinatra::Base
   #
   #     haml :tutorials
   #   rescue
-  #     session[:flash_error] = 'Sorry -- we could not update that query'
-  #     redirect "/tutorials/#{@id}"
+  #     error_send "/tutorials/#{@id}", 'Sorry -- we could not update that query'
   #   end
   # end
 
   delete '/tutorials/:id' do
     request_url = cadet_api_url "tutorials/#{params[:id]}"
     result = HTTParty.delete(request_url)
-    session[:flash_notice] = 'Previous group search results deleted'
+    flash[:notice] = 'Previous group search results deleted'
     redirect '/tutorials'
   end
 end
