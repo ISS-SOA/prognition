@@ -1,10 +1,31 @@
+-# For DatePicker:  http://formvalidation.io/examples/bootstrap-datepicker/
+-#                  http://eonasdan.github.io/bootstrap-datetimepicker/
+%link{rel: "stylesheet", href: "//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css"}
+%link{rel: "stylesheet", href: "//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker3.min.css"}
+%script{src: "//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.min.js"}
+:javascript
+  $(document).ready(function() {
+    $('#deadline_date_picker').datepicker({
+        format: 'M-dd-yyyy'
+      })
+  });
 
 %form{role: 'form', :action => '/tutorials', :method => 'post', :id => 'check-form'}
   %div{class:'row cadet-form'}
-    %label{for: 'input-description', class: 'col-md-2'} Description
-    %div{class:'col-md-10'}
-      - description = @results ? @results['description'] : nil
-      %input{class: 'form-control required', type: 'text', name: 'description', id: 'input-description', placeholder: 'Enter a description of your search', value: "#{description}"}
+    %label{for: 'input-description', class: 'control-label col-md-1'} Description:
+    %div{class:'col-md-7'}
+      - description = @results.try(:[], 'description')
+      %input{class: 'form-control', type: 'text', name: 'description',
+             id: 'input-description', placeholder: 'Enter a description of your search',
+             value: "#{description}"}
+    %label{for: 'deadline_date_picker', class: 'control-label col-md-1'} Deadline:
+    %div{class:'col-md-3'}
+      %div{class: 'input-group input-append date', id: 'deadline_date_picker'}
+        %input{type: 'text', class: 'form-control', name: 'deadline_date',
+               placeholder: "#{(Date.today).strftime("%b-%d-%Y")} (default)",
+               value: "#{@from_date.try(:strftime, "%b-%d-%Y")}"}
+        %span{class: 'input-group-addon add-on'}
+          %span{class: 'glyphicon glyphicon-calendar'}
   %div{class:'row cadet-form'}
     %div{class:'col-md-6'}
       %label{:for => 'check-usernames'} Usernames
@@ -26,13 +47,14 @@
       %div{class:'col-md-4 text-center'}
         %button{class: 'btn btn-default btn-block', type:'submit', :value => 'POST', :id => 'btn-search'}
           %span{class: 'glyphicon glyphicon-search'}
-          Search
+          Check
       %div{class:'col-md-4 text-center'}
 
 - if @results
   %form{role: 'form', action: "/tutorials/#{@id}", :method => 'POST', :id => 'delete-form'}
     %div{class:'col-md-4 text-center'}
     %div{class:'col-md-4 text-center'}
+      -## TODO:
       -# %button{class: 'btn btn-default', type:'submit', name: '_method', value: 'PUT', :id => 'btn-update'}
       -#   %span{class: 'glyphicon glyphicon-edit'}
       -#   Update

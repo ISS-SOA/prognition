@@ -104,7 +104,7 @@ class Prognition < Sinatra::Base
     haml :cadet
   end
 
-  get '/tutorials' do
+  get '/tutorials/?' do
     haml :tutorials
   end
 
@@ -112,12 +112,13 @@ class Prognition < Sinatra::Base
     description = params[:description].strip
     usernames = array_strip params[:usernames].split("\r\n")
     badges = array_strip params[:badges].split("\r\n")
-
+    deadline = Date.try(:parse, params[:deadline])
     error_send back, 'All fields are required' \
       if (description.empty? || usernames.empty? || badges.empty?)
 
     request_url = cadet_api_url 'tutorials'
     params_h = {description: description, usernames: usernames, badges: badges}
+    #params_h[:deadline] =
     options =  {  body: params_h.to_json,
                   headers: { 'Content-Type' => 'application/json' } }
     results = HTTParty.post(request_url, options)
