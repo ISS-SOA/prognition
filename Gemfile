@@ -11,6 +11,8 @@ gem 'haml'
 gem 'tilt'
 gem 'chartkick'
 
+gem 'active_support'
+
 group :development do
   gem 'tux'
   gem 'rerun'

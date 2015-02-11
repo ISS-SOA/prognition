@@ -6,6 +6,9 @@ require 'chartkick'
 
 require 'httparty'
 
+require 'active_support'
+require 'active_support/core_ext'
+
 ##
 # Web application to track progress on Codecademy
 class Prognition < Sinatra::Base
@@ -35,13 +38,21 @@ class Prognition < Sinatra::Base
       URI.join(API_BASE_URI, API_VER, resource).to_s
     end
 
-    def date_count(badges, from: nil)
+    def date_in_range?(date, from: nil, til: nil)
+      from_check = from ? from < date : true
+      til_check = til ? date < til : true
+
+      from_check && til_check
+    end
+
+    def date_count(badges, from: nil, til: nil)
       dates = Hash.new(0)
       badges.each { |badge| dates[Date.parse(badge['date'])] += 1 }
-      from ||= dates.keys.min
+      from ||= dates.keys.min - 1
+      til  ||= dates.keys.max + 1
 
-      (from..dates.keys.max).each do |date|
-         if dates[date] == 0
+      (from..til).each do |date|
+         if dates[date] == 0          # if date in range is not yet set
            dates[date] = 0
          end
       end
@@ -51,56 +62,55 @@ class Prognition < Sinatra::Base
     def array_strip(str_arr)
       str_arr.map(&:strip).reject(&:empty?)
     end
+
+    def error_send(url, msg)
+      session[:flash_error] = msg
+      redirect url
+      halt 303        # http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+    end
   end
 
   get '/' do
-    redirect '/cadet'
+    redirect '/cadets'
   end
 
-  get '/cadet/?' do
+  get '/cadets/?' do
     @username = params[:username]
     if @username
-      unless params[:from_date].empty?
+      unless params[:from_date].nil? || params[:from_date].empty?
         from_date = Date.parse params[:from_date]
         from_query = "?from_date=#{from_date}"
       end
 
-      redirect "/cadet/#{@username}#{from_query}"
+      redirect "/cadets/#{@username}#{from_query}"
       return nil
     end
 
     haml :cadet
   end
 
-  get '/cadet/:username' do
+  get '/cadets/:username' do
     @username = params[:username].strip
+    from_date = params[:from_date] ? Date.parse(params[:from_date]) : nil
+    til_date = params[:until_date] ? Date.parse(params[:until_date]) : nil
+
     begin
       @cadet = HTTParty.get cadet_api_url("cadet/#{@username}.json")
     rescue
-      @cadet = nil
+      error_send back, "Could not access Codecademy – please try again later"
     end
 
-    if @username && @cadet.nil?
-      session[:flash_error] = "Could not find Codecademy user: #{@username}" if @cadet.nil?
-      redirect '/cadet'
-      return nil
+    error_send back, "Could not find a Codecademy user named: #{@username}" \
+      if @username && @cadet.nil?
+
+    @cadet['badges'] = @cadet['badges'].select do |badge|
+      date_in_range?(Date.parse(badge['date']), from: from_date, til: til_date)
     end
 
-    from_date = to_date = nil
-    if params[:from_date]
-      from_date = Date.parse(params[:from_date])
-      @cadet['badges'] = @cadet['badges'].select do |badge|
-        Date.parse(badge['date']) > from_date
-      end
-    end
+    error_send "/cadets/#{@username}", "No badges found within those dates" \
+      if @cadet['badges'].count == 0
 
-    if @cadet['badges'].count == 0
-      session[:flash_error] = "No badges found in that date range"
-      redirect "/cadet/#{@username}"
-      return nil
-    end
-
-    @dates = date_count(@cadet['badges'], from: from_date)
+    @dates = date_count(@cadet['badges'], from: from_date, til: til_date)
     haml :cadet
   end
 
@@ -113,11 +123,8 @@ class Prognition < Sinatra::Base
     usernames = array_strip params[:usernames].split("\r\n")
     badges = array_strip params[:badges].split("\r\n")
 
-    if (description.empty? || usernames.empty? || badges.empty?)
-      session[:flash_error] = 'All fields are required'
-      redirect '/tutorials'
-      return
-    end
+    error_send back, 'All fields are required' \
+      if (description.empty? || usernames.empty? || badges.empty?)
 
     request_url = cadet_api_url 'tutorials'
     params_h = {description: description, usernames: usernames, badges: badges}
@@ -125,11 +132,7 @@ class Prognition < Sinatra::Base
                   headers: { 'Content-Type' => 'application/json' } }
     results = HTTParty.post(request_url, options)
 
-    if (results.code != 200)
-      session[:flash_error] = 'usernames not found'
-      redirect '/tutorials'
-      return nil
-    end
+    error_send back, 'usernames not found' if (results.code != 200)
 
     session[:results] = results.to_json
 
@@ -153,8 +156,7 @@ class Prognition < Sinatra::Base
 
       haml :tutorials
     rescue
-      session[:flash_error] = 'Could not find results of previous query -- it may have been deleted'
-      redirect '/tutorials'
+      error_send '/tutorials', 'Could not find results of previous query -- it may have been deleted'
     end
   end
 
