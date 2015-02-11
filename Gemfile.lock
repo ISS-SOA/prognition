@@ -1,6 +1,12 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    activesupport (4.2.0)
+      i18n (~> 0.7)
+      json (~> 1.7, >= 1.7.7)
+      minitest (~> 5.1)
+      thread_safe (~> 0.3, >= 0.3.4)
+      tzinfo (~> 1.1)
     backports (3.6.4)
     bond (0.5.1)
     celluloid (0.16.0)
@@ -15,6 +21,7 @@ GEM
     httparty (0.13.3)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
+    i18n (0.7.0)
     json (1.8.1)
     listen (2.8.4)
       celluloid (>= 0.15.2)
@@ -24,6 +31,8 @@ GEM
     multi_json (1.10.1)
     multi_xml (0.5.5)
     rack (1.5.2)
+    rack-flash3 (1.0.5)
+      rack
     rack-protection (1.5.3)
       rack
     rack-test (0.6.2)
@@ -53,12 +62,11 @@ GEM
       rack-test
       sinatra (~> 1.4.0)
       tilt (~> 1.3)
-    sinatra-flash (0.3.0)
-      sinatra (>= 1.0.0)
     thin (1.6.3)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0)
       rack (~> 1.0)
+    thread_safe (0.3.4)
     tilt (1.4.1)
     timers (4.0.1)
       hitimes
@@ -67,23 +75,26 @@ GEM
       ripl-multi_line (>= 0.2.4)
       ripl-rack (>= 0.2.0)
       sinatra (>= 1.2.1)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  activesupport
   chartkick
   haml
   httparty
   json
   minitest
   rack
+  rack-flash3
   rack-test
   rake
   rerun
   sinatra
   sinatra-contrib
-  sinatra-flash
   thin
   tilt
   tux

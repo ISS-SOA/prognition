@@ -2,11 +2,16 @@
 %html{:lang => 'en'}
   %head
     %title Prognition
+
+    -# CSS, JS, and settings For Bootstrap:
+    -# note: switched from Google CDN to jquery CDN
     %meta{:charset => 'utf-8'}
     %meta{name: 'viewport', content: 'width=device-width, initial-scale=1'}
-    %link{rel:'stylesheet', href:'http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css'}
-    %script{src:'https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'}
-    %script{src:'http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'}
+    %link{rel:'stylesheet', href:'//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css'}
+    %script{src:'//code.jquery.com/jquery-1.11.2.min.js'}
+    %script{src:'//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'}
+
+    -# Custom CSS:
     %link{rel:'stylesheet', href:'/custom.css'}
 
   %body

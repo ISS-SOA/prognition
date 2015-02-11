@@ -1,8 +1,6 @@
-- if session[:flash_notice]
-  %div{class: 'flash notice'}
-    = session[:flash_notice]
-    - session[:flash_notice] = nil
-- if session[:flash_error]
+- if flash[:error]
   %div{class: 'flash error'}
-    = session[:flash_error]
-    - session[:flash_error] = nil
+    = flash[:error]
+- if flash[:notice]
+  %div{class: 'flash notice'}
+    = flash[:notice]
