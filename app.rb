@@ -112,23 +112,26 @@ class Prognition < Sinatra::Base
     description = params[:description].strip
     usernames = array_strip params[:usernames].split("\r\n")
     badges = array_strip params[:badges].split("\r\n")
-    deadline = Date.try(:parse, params[:deadline])
     error_send back, 'All fields are required' \
       if (description.empty? || usernames.empty? || badges.empty?)
 
-    request_url = cadet_api_url 'tutorials'
     params_h = {description: description, usernames: usernames, badges: badges}
-    #params_h[:deadline] =
+
+    params_h[:deadline] = Date.parse(params[:deadline]) \
+      unless params[:deadline].empty?
+
+    request_url = cadet_api_url 'tutorials'
     options =  {  body: params_h.to_json,
                   headers: { 'Content-Type' => 'application/json' } }
     results = HTTParty.post(request_url, options)
 
+    ## TODO: Check for unique username failures
     error_send back, 'usernames not found' if (results.code != 200)
 
-    session[:results] = results.to_json
-
+    session[:results] = results
     id = results.request.last_uri.path.split('/').last
     flash[:notice] = 'You may bookmark this query to return later for updated results'
+
     redirect "/tutorials/#{id}"
   end
 
@@ -137,7 +140,7 @@ class Prognition < Sinatra::Base
       @id = params[:id]
 
       if session[:results]
-        @results = JSON.parse session[:results]
+        @results = session[:results]
         session[:results] = nil
       else
         request_url = cadet_api_url "tutorials/#{@id}"
@@ -147,7 +150,7 @@ class Prognition < Sinatra::Base
 
       haml :tutorials
     rescue
-      error_send '/tutorials', 'Could not find results of previous query -- it may have been deleted'
+      error_send '/tutorials', "Could not find results of previous query -- it may have been deleted"
     end
   end
 

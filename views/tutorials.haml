@@ -21,9 +21,11 @@
     %label{for: 'deadline_date_picker', class: 'control-label col-md-1'} Deadline:
     %div{class:'col-md-3'}
       %div{class: 'input-group input-append date', id: 'deadline_date_picker'}
-        %input{type: 'text', class: 'form-control', name: 'deadline_date',
-               placeholder: "#{(Date.today).strftime("%b-%d-%Y")} (default)",
-               value: "#{@from_date.try(:strftime, "%b-%d-%Y")}"}
+        - deadline_str = @results.try(:[], 'deadline')
+        - deadline = Date.parse(deadline_str) if deadline_str
+        %input{type: 'text', class: 'form-control', name: 'deadline',
+               placeholder: "(no deadline)",
+               value: "#{deadline.try(:strftime, "%b-%d-%Y")}"}
         %span{class: 'input-group-addon add-on'}
           %span{class: 'glyphicon glyphicon-calendar'}
   %div{class:'row cadet-form'}
@@ -69,7 +71,8 @@
     %thead
       %tr
         %th Username
-        %th Badges Missing
+        %th Missing
+        %th Late
     %tbody
       - @results['missing'].each do |user, missing|
         %tr
@@ -77,8 +80,14 @@
             %span{class: 'lead'} #{user}
             %br
             - if missing.count > 0
-              %span{class: 'small bg-danger', style: 'bg-danger'} #{missing.count} missing
+              %span{class: 'small bg-danger'} #{missing.count} missing
             - else
               %span{class: 'small'} none missing
+            - late_badges = @results['late'][user]
+            - if late_badges && late_badges.count > 0
+              %br
+              %span{class: 'small bg-info'} #{late.count} late
           %td
             = missing.join ", "
+          %td
+            = late_badges.keys.join(", ") if late_badges
