@@ -149,7 +149,8 @@ class Prognition < Sinatra::Base
       end
 
       haml :tutorials
-    rescue
+    rescue => e
+      logger.info e
       error_send '/tutorials', "Could not find results of previous query -- it may have been deleted"
     end
   end
