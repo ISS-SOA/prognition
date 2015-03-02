@@ -86,7 +86,7 @@
             - late_badges = @results['late'][user]
             - if late_badges && late_badges.count > 0
               %br
-              %span{class: 'small bg-info'} #{late.count} late
+              %span{class: 'small bg-info'} #{late_badges.count} late
           %td
             = missing.join ", "
           %td
