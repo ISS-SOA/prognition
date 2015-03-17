@@ -5,6 +5,7 @@ A web application to track and compare users' progress on Codecademy.com
 - Useful for students to visualize their own progress
 
 Major Changes to UI:
+- Mar 17, 2015: Added first logo first site banner
 - Feb 25, 2015: Added deadline date field to group check
 - Feb 11, 2015: Added from/until date fields to cadets, description field to group check
 - Feb 06, 2015: Upgraded look-and-feel using basic Twitter Bootstrap layout
