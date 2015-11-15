@@ -15,7 +15,7 @@ module ApplicationHelpers
     URI.join(API_BASE_URI, API_VER, resource).to_s
   end
 
-  def date_in_open_range?(date, from: nil, til: nil)
+  def date_in_range?(date, from: nil, til: nil)
     from_check = from ? from < date : true
     til_check = til ? date < til : true
 

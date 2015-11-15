@@ -33,8 +33,8 @@ class ApplicationController < Sinatra::Base
   get_cadets = lambda do
     if params[:username]
       @username = params[:username].strip
-      @from_date = params[:from_date].blank? ? nil : Date.parse(params[:from_date])
-      @til_date = params[:til_date].blank? ? nil : Date.parse(params[:til_date])
+      @from_dt = params[:from_date].blank? ? nil : Date.parse(params[:from_date])
+      @til_dt = params[:til_date].blank? ? nil : Date.parse(params[:til_date])
 
       begin
         @cadet = HTTParty.get cadet_api_url("cadet/#{@username}.json")
@@ -42,17 +42,17 @@ class ApplicationController < Sinatra::Base
         error_send '/', 'Could not access Codecademy – please try again later'
       end
 
-      error_send '/cadets', "Could not find a Codecademy user named: #{@username}" \
+      error_send '/cadets', "Could not find Codecademy user: #{@username}" \
         if @username && @cadet.nil?
 
       @cadet['badges'] = @cadet['badges'].select do |badge|
-        date_in_open_range?(Date.parse(badge['date']), from: @from_date, til: @til_date)
+        date_in_range?(Date.parse(badge['date']), from: @from_dt, til: @til_dt)
       end
 
-      error_send "/cadets?username=#{@username}", 'No badges found within those dates' \
+      error_send "/cadets?username=#{@username}", 'No badges within dates' \
         if @cadet['badges'].count == 0
 
-      @dates = date_count(@cadet['badges'], from: @from_date, til: @til_date)
+      @dates = date_count(@cadet['badges'], from: @from_dt, til: @til_dt)
     end
 
     haml :cadet
@@ -78,7 +78,7 @@ class ApplicationController < Sinatra::Base
       haml :tutorials
     rescue => e
       logger.info e
-      error_send '/tutorials', 'Could not find results of previous query -- it may have been deleted'
+      error_send '/tutorials', 'Could not find query -- perhaps it was deleted?'
     end
   end
 
