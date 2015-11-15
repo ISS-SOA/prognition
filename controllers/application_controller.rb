@@ -12,10 +12,13 @@ require 'active_support/core_ext'
 
 ##
 # Web application to track progress on Codecademy
-class Prognition < Sinatra::Base
+class ApplicationController < Sinatra::Base
   use Rack::MethodOverride
   use Rack::Session::Pool
   use Rack::Flash
+
+  set :views, File.expand_path('../../views', __FILE__)
+  set :public_folder, File.expand_path('../../public', __FILE__)
 
   configure :production, :development do
     enable :logging

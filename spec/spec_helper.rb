@@ -7,5 +7,5 @@ require_relative '../app'
 include Rack::Test::Methods
 
 def app
-  Prognition
+  ApplicationController
 end

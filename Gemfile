@@ -1,9 +1,12 @@
 source 'http://rubygems.org'
 
-gem 'thin'
+gem 'puma'
 gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'json'
+gem 'virtus'
+gem 'activemodel'
+
 gem 'httparty'
 
 gem 'rack-flash3'
