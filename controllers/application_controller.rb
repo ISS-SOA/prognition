@@ -33,8 +33,8 @@ class ApplicationController < Sinatra::Base
   get_cadets = lambda do
     if params[:username]
       @username = params[:username].strip
-      @from_dt = params[:from_date].blank? ? nil : Date.parse(params[:from_date])
-      @til_dt = params[:til_date].blank? ? nil : Date.parse(params[:til_date])
+      @from_date = Date.parse(params[:from_date]) unless params[:from_date].blank?
+      @til_date = Date.parse(params[:til_date]) unless params[:til_date].blank?
 
       begin
         @cadet = HTTParty.get cadet_api_url("cadet/#{@username}.json")
@@ -46,13 +46,13 @@ class ApplicationController < Sinatra::Base
         if @username && @cadet.nil?
 
       @cadet['badges'] = @cadet['badges'].select do |badge|
-        date_in_range?(Date.parse(badge['date']), from: @from_dt, til: @til_dt)
+        date_in_range?(Date.parse(badge['date']), from: @from_date, til: @til_date)
       end
 
       error_send "/cadets?username=#{@username}", 'No badges within dates' \
         if @cadet['badges'].count == 0
 
-      @dates = date_count(@cadet['badges'], from: @from_dt, til: @til_dt)
+      @dates = date_count(@cadet['badges'], from: @from_date, til: @til_date)
     end
 
     haml :cadet
@@ -84,8 +84,7 @@ class ApplicationController < Sinatra::Base
 
   post_tutorials = lambda do
     form = TutorialForm.new(params)
-    error_send(back, 'Following fields are required: ' \
-                     "#{form.errors.messages.keys.map(&:to_s).join(', ')}") \
+    error_send(back, "Following fields are required: #{form.error_fields}") \
       unless form.valid?
 
     results = CheckTutorialFromAPI.new(cadet_api_url('tutorials'), form).call

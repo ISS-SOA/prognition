@@ -31,4 +31,8 @@ class TutorialForm
   validates :description, presence: true
   validates :usernames, presence: true
   validates :badges, presence: true
+
+  def error_fields
+    errors.messages.keys.map(&:to_s).join(', ')
+  end
 end

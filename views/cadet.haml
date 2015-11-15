@@ -33,7 +33,7 @@
     %div{class: 'input-group input-append date', id: 'from_date_picker'}
       %input{type: 'text', class: 'form-control', name: 'from_date',
              placeholder: "e.g., #{(Date.today - 6.months).strftime("%b-%d-%Y")}",
-             value: "#{@from_dt.try(:strftime, "%b-%d-%Y")}"}
+             value: "#{@from_date.try(:strftime, "%b-%d-%Y")}"}
       %span{class: 'input-group-addon add-on'}
         %span{class: 'glyphicon glyphicon-calendar'}
   %div{class: 'form-group'}
@@ -41,7 +41,7 @@
     %div{class: 'input-group input-append date', id: 'til_date_picker'}
       %input{type: 'text', class: 'form-control', name: 'til_date',
              placeholder: "e.g., #{Date.today.strftime("%b-%d-%Y")}",
-             value: "#{@til_dt.try(:strftime, "%b-%d-%Y")}"}
+             value: "#{@til_date.try(:strftime, "%b-%d-%Y")}"}
       %span{class: 'input-group-addon add-on'}
         %span{class: 'glyphicon glyphicon-calendar'}
   %button{type: 'submit', class: 'btn btn-default', id: 'submit-button', value: 'submit'}
