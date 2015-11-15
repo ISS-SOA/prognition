@@ -16,57 +16,13 @@ class ApplicationController < Sinatra::Base
   use Rack::MethodOverride
   use Rack::Session::Pool
   use Rack::Flash
+  helpers ApplicationHelpers
 
   set :views, File.expand_path('../../views', __FILE__)
   set :public_folder, File.expand_path('../../public', __FILE__)
 
   configure :production, :development do
     enable :logging
-  end
-
-  API_BASE_URI = 'http://cadetdynamo.herokuapp.com'
-  API_VER = '/api/v3/'
-
-  helpers do
-    def current_page?(path = ' ')
-      path_info = request.path_info
-      path_info += ' ' if path_info == '/'
-      request_path = path_info.split '/'
-      request_path[1] == path
-    end
-
-    def cadet_api_url(resource)
-      URI.join(API_BASE_URI, API_VER, resource).to_s
-    end
-
-    def date_in_open_range?(date, from: nil, til: nil)
-      from_check = from ? from < date : true
-      til_check = til ? date < til : true
-
-      from_check && til_check
-    end
-
-    def date_count(badges, from: nil, til: nil)
-      dates = Hash.new(0)
-      badges.each { |badge| dates[Date.parse(badge['date'])] += 1 }
-      from ||= dates.keys.min - 1
-      til ||= dates.keys.max + 1
-
-      (from..til).each do |date|
-        dates[date] = 0 if (dates[date] == 0) # if date in range is not yet set
-      end
-      dates
-    end
-
-    def array_strip(str_arr)
-      str_arr.map(&:strip).reject(&:empty?)
-    end
-
-    def error_send(url, msg)
-      flash[:error] = msg
-      redirect url
-      halt 303        # http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
-    end
   end
 
   # WEB LAMBDAS
@@ -127,33 +83,16 @@ class ApplicationController < Sinatra::Base
   end
 
   post_tutorials = lambda do
-    # description = params[:description].strip
-    # usernames = array_strip params[:usernames].split("\r\n")
-    # badges = array_strip params[:badges].split("\r\n")
     form = TutorialForm.new(params)
-
-    error_send back, "Following fields are required: #{form.errors.messages.keys.map(&:to_s).join(', ')}" \
+    error_send(back, 'Following fields are required: ' \
+                     "#{form.errors.messages.keys.map(&:to_s).join(', ')}") \
       unless form.valid?
-      # if (description.empty? || usernames.empty? || badges.empty?)
-
-    # params_h = { description: description, usernames: usernames, badges: badges }
-
-    # params_h[:deadline] = Date.parse(params[:deadline]) \
-    #   unless params[:deadline].empty?
-
-    # request_url = cadet_api_url 'tutorials'
-    # options =  {  body: form.to_json,
-    #               headers: { 'Content-Type' => 'application/json' } }
-    # results = HTTParty.post(request_url, options)
 
     results = CheckTutorialFromAPI.new(cadet_api_url('tutorials'), form).call
-
-    ## TODO: Check for unique username failures
     error_send back, 'Could not find usernames' if (results.code != 200)
 
     session[:results] = results
-    flash[:notice] = 'You may bookmark this query to return later for updated results'
-    # id = results.request.last_uri.path.split('/').last
+    flash[:notice] = 'You may bookmark this query and return later for updates'
     redirect "/tutorials/#{results.id}"
   end
 
