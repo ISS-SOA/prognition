@@ -24,10 +24,6 @@ class ApplicationController < Sinatra::Base
     enable :logging
   end
 
-  configure :development do
-    #set :session_secret, "something"    # ignore if not using shotgun in development
-  end
-
   API_BASE_URI = 'http://cadetdynamo.herokuapp.com'
   API_VER = '/api/v3/'
 
@@ -54,12 +50,10 @@ class ApplicationController < Sinatra::Base
       dates = Hash.new(0)
       badges.each { |badge| dates[Date.parse(badge['date'])] += 1 }
       from ||= dates.keys.min - 1
-      til  ||= dates.keys.max + 1
+      til ||= dates.keys.max + 1
 
       (from..til).each do |date|
-         if dates[date] == 0          # if date in range is not yet set
-           dates[date] = 0
-         end
+        dates[date] = 0 if (dates[date] == 0) # if date in range is not yet set
       end
       dates
     end
@@ -75,11 +69,12 @@ class ApplicationController < Sinatra::Base
     end
   end
 
-  get '/' do
+  # WEB LAMBDAS
+  get_root_route = lambda do
     redirect '/cadets'
   end
 
-  get '/cadets/?' do
+  get_cadets = lambda do
     if params[:username]
       @username = params[:username].strip
       @from_date = params[:from_date].blank? ? nil : Date.parse(params[:from_date])
@@ -88,7 +83,7 @@ class ApplicationController < Sinatra::Base
       begin
         @cadet = HTTParty.get cadet_api_url("cadet/#{@username}.json")
       rescue
-        error_send '/', "Could not access Codecademy – please try again later"
+        error_send '/', 'Could not access Codecademy – please try again later'
       end
 
       error_send '/cadets', "Could not find a Codecademy user named: #{@username}" \
@@ -98,7 +93,7 @@ class ApplicationController < Sinatra::Base
         date_in_open_range?(Date.parse(badge['date']), from: @from_date, til: @til_date)
       end
 
-      error_send "/cadets?username=#{@username}", "No badges found within those dates" \
+      error_send "/cadets?username=#{@username}", 'No badges found within those dates' \
         if @cadet['badges'].count == 0
 
       @dates = date_count(@cadet['badges'], from: @from_date, til: @til_date)
@@ -107,38 +102,11 @@ class ApplicationController < Sinatra::Base
     haml :cadet
   end
 
-  get '/tutorials/?' do
+  get_tutorials_new = lambda do
     haml :tutorials
   end
 
-  post '/tutorials' do
-    description = params[:description].strip
-    usernames = array_strip params[:usernames].split("\r\n")
-    badges = array_strip params[:badges].split("\r\n")
-    error_send back, 'All fields are required' \
-      if (description.empty? || usernames.empty? || badges.empty?)
-
-    params_h = {description: description, usernames: usernames, badges: badges}
-
-    params_h[:deadline] = Date.parse(params[:deadline]) \
-      unless params[:deadline].empty?
-
-    request_url = cadet_api_url 'tutorials'
-    options =  {  body: params_h.to_json,
-                  headers: { 'Content-Type' => 'application/json' } }
-    results = HTTParty.post(request_url, options)
-
-    ## TODO: Check for unique username failures
-    error_send back, 'usernames not found' if (results.code != 200)
-
-    session[:results] = results
-    id = results.request.last_uri.path.split('/').last
-    flash[:notice] = 'You may bookmark this query to return later for updated results'
-
-    redirect "/tutorials/#{id}"
-  end
-
-  get '/tutorials/:id' do
+  get_tutorials_id = lambda do
     begin
       @id = params[:id]
 
@@ -154,29 +122,53 @@ class ApplicationController < Sinatra::Base
       haml :tutorials
     rescue => e
       logger.info e
-      error_send '/tutorials', "Could not find results of previous query -- it may have been deleted"
+      error_send '/tutorials', 'Could not find results of previous query -- it may have been deleted'
     end
   end
 
-  ## TODO:
-  # put '/tutorials/:id' do
-  #   begin
-  #     @id = params[:id]
-  #       request_url = cadet_api_url "tutorials/#{@id}"
-  #       options =  { headers: { 'Content-Type' => 'application/json' } }
-  #       @results = HTTParty.put(request_url, options)
-  #     end
-  #
-  #     haml :tutorials
-  #   rescue
-  #     error_send "/tutorials/#{@id}", 'Sorry -- we could not update that query'
-  #   end
-  # end
+  post_tutorials = lambda do
+    # description = params[:description].strip
+    # usernames = array_strip params[:usernames].split("\r\n")
+    # badges = array_strip params[:badges].split("\r\n")
+    form = TutorialForm.new(params)
 
-  delete '/tutorials/:id' do
+    error_send back, "Following fields are required: #{form.errors.messages.keys.map(&:to_s).join(', ')}" \
+      unless form.valid?
+      # if (description.empty? || usernames.empty? || badges.empty?)
+
+    # params_h = { description: description, usernames: usernames, badges: badges }
+
+    # params_h[:deadline] = Date.parse(params[:deadline]) \
+    #   unless params[:deadline].empty?
+
+    # request_url = cadet_api_url 'tutorials'
+    # options =  {  body: form.to_json,
+    #               headers: { 'Content-Type' => 'application/json' } }
+    # results = HTTParty.post(request_url, options)
+
+    results = CheckTutorialFromAPI.new(cadet_api_url('tutorials'), form).call
+
+    ## TODO: Check for unique username failures
+    error_send back, 'Could not find usernames' if (results.code != 200)
+
+    session[:results] = results
+    flash[:notice] = 'You may bookmark this query to return later for updated results'
+    # id = results.request.last_uri.path.split('/').last
+    redirect "/tutorials/#{results.id}"
+  end
+
+  delete_tutorials = lambda do
     request_url = cadet_api_url "tutorials/#{params[:id]}"
-    result = HTTParty.delete(request_url)
+    HTTParty.delete(request_url)
     flash[:notice] = 'Previous group search results deleted'
     redirect '/tutorials'
   end
+
+  # WEB ROUTES
+  get '/', &get_root_route
+  get '/cadets/?', &get_cadets
+  get '/tutorials/?', &get_tutorials_new
+  get '/tutorials/:id', &get_tutorials_id
+  post '/tutorials', &post_tutorials
+  delete '/tutorials/:id', &delete_tutorials
 end
