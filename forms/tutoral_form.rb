@@ -13,7 +13,8 @@ end
 # Array<String> attribute for form objects of TutorialForm
 class ArrayOfNames < Virtus::Attribute
   def coerce(value)
-    value.is_a?(String) ? value.split("\r\n").map(&:strip).reject(&:empty?) : nil
+    value.is_a?(String) ?
+      value.split("\r\n").map(&:strip).reject(&:empty?) : nil
   end
 end
 
