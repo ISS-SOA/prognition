@@ -4,9 +4,11 @@ require 'json'
 
 describe 'Prognition Stories' do
   before do
-    @headless = Headless.new
-    @browser = Watir::Browser.new
-    @browser.goto 'localhost:9292'
+    unless @browser
+      @headless = Headless.new
+      @browser = Watir::Browser.new
+      @browser.goto 'localhost:9292'
+    end
   end
 
   describe 'Visiting the home page' do
@@ -26,8 +28,8 @@ describe 'Prognition Stories' do
     end
   end
 
-  after do
-    @browser.close
-    @headless.destroy
-  end
+  # after do
+  #   @browser.close
+  #   @headless.destroy
+  # end
 end

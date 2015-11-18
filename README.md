@@ -15,13 +15,15 @@ A web application to track and compare users' progress on Codecademy.com
 Uses web service: http://cadetdynamo.herokuapp.com/api/v3/
 
 ## Testing
-### Ubuntu
+
+### Ubuntu setup
 For headless mode to work, must first run:
 ```
-RUN apt-get install -y xvfb
+apt-get install -y xvfb
 ```
+(note that this is not needed on Codeship, which already has xvfb and Firefox installed)
 
-### Codeship
+### CI/CD Tests
 Test instructions:
 ```
 bundle exec rackup &
