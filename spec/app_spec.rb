@@ -38,7 +38,8 @@ describe 'Prognition Stories' do
 
       @browser.url.must_match %r{http.*/tutorials/.*}
       @browser.li(class: 'active').text.must_equal 'Check a Group'
-      @browser.textarea(name: 'usernames').text.must_equal "soumya.ray\nchenlizhan"
+      @browser.textarea(name: 'usernames').text.must_match 'soumya.ray'
+      @browser.textarea(name: 'usernames').text.must_match 'chenlizhan'
       @browser.textarea(name: 'badges').text.must_equal 'Object-Oriented Programming II'
       @browser.table(class: 'table').rows[1].text.must_match(/soumya.ray/)
       @browser.table(class: 'table').rows[1].text.must_match(/1 missing/)
