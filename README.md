@@ -1,4 +1,5 @@
 # Prognition
+[ ![Codeship Status for ISS-SOA/prognition](https://codeship.com/projects/3090fd20-7029-0133-38b1-4acedf45d268/status?branch=master)](https://codeship.com/projects/116454)
 
 A web application to track and compare users' progress on Codecademy.com
 - Useful for instructors to monitor student progress
