@@ -12,18 +12,23 @@ A web application to track and compare users' progress on Codecademy.com
 - Feb 06, 2015: Upgraded look-and-feel using basic Twitter Bootstrap layout
 - Jan 05, 2014: Added chart to cadet view
 
+# Other Recent Changes:
+- Nov ??, 2015: Added acceptance tests (Watir)
+- Nov ??, 2015: Better checks for missing and invalid fields
+
 Uses web service: http://cadetdynamo.herokuapp.com/api/v3/
 
 ## Testing
 
-### Ubuntu setup
-For headless mode to work, must first run:
+### Local Linux setup
+For headless mode to work on Linux, install xvfb once:
 ```
 apt-get install -y xvfb
 ```
 (note that this is not needed on Codeship, which already has xvfb and Firefox installed)
+(note that headless mode does not usually work on Mac OSX)
 
-### CI/CD Tests
+### Remote CI/CD Tests (CodeShip)
 Test instructions:
 ```
 bundle exec rackup &
