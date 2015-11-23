@@ -1,7 +1,6 @@
 require_relative 'spec_helper'
 require 'json'
 
-
 describe 'Prognition Stories' do
   before do
     unless @browser
@@ -20,6 +19,7 @@ describe 'Prognition Stories' do
   describe 'Searching for a cadet' do
     it 'finds a real user' do
       @browser.link(text: '(see example)').click
+
       @browser.h1(class: 'username').text.must_equal 'chenlizhan'
       @browser.input(name: 'from_date').value.must_equal 'Jul-15-2014'
       @browser.input(name: 'til_date').value.must_equal 'Jul-29-2014'
@@ -31,6 +31,7 @@ describe 'Prognition Stories' do
   describe 'Creating a new tutorial query' do
     it 'can search a new tutorial' do
       @browser.link(text: 'Check a Group').click
+
       @browser.text_field(name: 'description').set('Automated Test')
       @browser.textarea(name: 'usernames').set("soumya.ray\nchenlizhan")
       @browser.textarea(name: 'badges').set('Object-Oriented Programming II')
