@@ -29,7 +29,7 @@ describe 'Prognition Stories' do
         page.user_header.must_equal 'chenlizhan'
         page.from_date.must_equal 'Jul-15-2014'
         page.til_date.must_equal 'Jul-29-2014'
-        page.badges_shown.must_equal 32
+        page.number_of_badges_shown.must_equal 32
       end
     end
 
@@ -37,16 +37,13 @@ describe 'Prognition Stories' do
       # GIVEN
       visit CadetPage do |page|
         # WHEN
-        page.username = 'soumya.ray'
-        page.from_date = 'May-01-2014'
-        page.til_date = 'May-30-2014'
-        page.click_search
+        page.find_cadet_badges('soumya.ray', 'May-01-2014', 'May-30-2014')
 
         # THEN
         page.user_header.must_equal 'soumya.ray'
         page.from_date.must_equal 'May-01-2014'
         page.til_date.must_equal 'May-30-2014'
-        page.badges_shown.must_equal 12
+        page.number_of_badges_shown.must_equal 12
       end
     end
   end
