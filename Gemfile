@@ -30,4 +30,5 @@ group :test do
 
   gem 'watir-webdriver'
   gem 'headless'
+  gem 'page-object'
 end
