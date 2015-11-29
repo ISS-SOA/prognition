@@ -17,7 +17,6 @@ describe 'Prognition Stories' do
     include PageObject::PageFactory
 
     it 'finds the title' do
-      # @browser.title.must_equal 'Prognition'
       visit HomePage do |page|
         page.title.must_equal 'Prognition'
         page.cadet_link_element.exists?.must_equal true
