@@ -15,6 +15,13 @@ class TutorialPage
     check_button
   end
 
+  def search_tutorial(description, usernames_a, badges_a)
+    self.description = description
+    self.usernames = usernames_a.join("\n")
+    self.badges = badges_a.join("\n")
+    click_check_button
+  end
+
   def result_for(username)
     row = results_table_element.select { |e| e.text.match(/#{username}/) }
                                .first.map(&:text)

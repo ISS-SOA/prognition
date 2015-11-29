@@ -53,13 +53,12 @@ describe 'Prognition Stories' do
       # GIVEN
       visit TutorialPage do |page|
         # WHEN
-        page.description = 'Automated Test'
-        page.usernames = "soumya.ray\nchenlizhan"
-        page.badges = 'Object-Oriented Programming II'
-        page.click_check_button
+        page.search_tutorial('Automated Test',
+                             ['soumya.ray','chenlizhan'],
+                             ['Object-Oriented Programming II'])
 
         # THEN
-        page.browser.url.must_match %r{http.*/tutorials/.*}
+        page.browser.url.must_match %r{http.*/tutorials/.+}
         page.usernames.must_equal "soumya.ray\nchenlizhan"
         page.badges.must_equal 'Object-Oriented Programming II'
 
