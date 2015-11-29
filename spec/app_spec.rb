@@ -1,9 +1,5 @@
 require_relative 'spec_helper'
-require 'json'
 require 'page-object'
-require_relative 'pages/cadet_page'
-require_relative 'pages/home_page'
-require_relative 'pages/tutorial_page'
 
 describe 'Prognition Stories' do
   include PageObject::PageFactory
@@ -13,7 +9,6 @@ describe 'Prognition Stories' do
       @headless = Headless.new
       @browser = Watir::Browser.new
     end
-    # @browser.goto 'localhost:9292'
   end
 
   describe 'Visiting the home page' do
@@ -79,17 +74,6 @@ describe 'Prognition Stories' do
         lee.status.must_equal 'none missing'
         lee.missing.must_equal ''
       end
-      #
-      # @browser.url.must_match %r{http.*/tutorials/.*}
-      # @browser.li(class: 'active').text.must_equal 'Check a Group'
-      # @browser.textarea(name: 'usernames').text.must_match 'soumya.ray'
-      # @browser.textarea(name: 'usernames').text.must_match 'chenlizhan'
-      # @browser.textarea(name: 'badges').text.must_equal 'Object-Oriented Programming II'
-      # @browser.table(class: 'table').rows[1].text.must_match(/soumya.ray/)
-      # @browser.table(class: 'table').rows[1].text.must_match(/1 missing/)
-      # @browser.table(class: 'table').rows[1].text.must_match(/Object-Oriented Programming II/)
-      # @browser.table(class: 'table').rows[2].text.must_match(/chenlizhan/)
-      # @browser.table(class: 'table').rows[2].text.must_match(/none missing/)
     end
   end
 

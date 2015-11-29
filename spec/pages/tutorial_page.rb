@@ -1,3 +1,5 @@
+require 'page-object'
+
 class TutorialPage
   include PageObject
 
