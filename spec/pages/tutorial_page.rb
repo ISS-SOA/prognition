@@ -15,6 +15,10 @@ class TutorialPage
     check_button
   end
 
+  def same_usernames_as?(names_a)
+    names_a.sort == self.usernames.split("\n").sort
+  end
+
   def search_tutorial(description, usernames_a, badges_a)
     self.description = description
     self.usernames = usernames_a.join("\n")

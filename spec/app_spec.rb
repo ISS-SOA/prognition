@@ -59,7 +59,7 @@ describe 'Prognition Stories' do
 
         # THEN
         page.browser.url.must_match %r{http.*/tutorials/.+}
-        page.usernames.must_equal "soumya.ray\nchenlizhan"
+        page.same_usernames_as?(['soumya.ray','chenlizhan']).must_equal true
         page.badges.must_equal 'Object-Oriented Programming II'
 
         ray = page.result_for 'soumya.ray'
