@@ -1,5 +1,4 @@
 require_relative 'spec_helper'
-require 'page-object'
 
 describe 'Prognition Stories' do
   include PageObject::PageFactory
